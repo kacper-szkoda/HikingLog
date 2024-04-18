@@ -7,4 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".MainScreen">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="be.kuleuven.gt.hikinglog.TopBarFragment"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:background="#8BC34A"
+        android:backgroundTint="#97BD6A"
+        android:foregroundTint="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
