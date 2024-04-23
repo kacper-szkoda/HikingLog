@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBtnLogin_Clicked (View Caller)
     {
-        Intent intent = new Intent(this, MainScreen.class);
+        Intent intent = new Intent(this, maps_screen.class);
         startActivity(intent);
     }
 
