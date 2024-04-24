@@ -30,6 +30,7 @@ android {
 
 dependencies {
 
+    implementation(libs.play.services.location)
     val fragment_version = "1.6.2"
     implementation("androidx.fragment:fragment:$fragment_version")
     implementation(libs.appcompat)
