@@ -15,8 +15,8 @@ public class PathDrawer {
         return circleOptions;
     }
 
-    public static PolylineOptions createLine(double Lat1, double Lng1, double Lat2, double Lng2){
+    public static PolylineOptions createLine(LatLng latLng1, LatLng latLng2){
         return new PolylineOptions()
-                .add(new LatLng(Lat1, Lng1), new LatLng(Lat2, Lng2));
+                .add(latLng1, latLng2);
     }
 }

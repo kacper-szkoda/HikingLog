@@ -2,6 +2,7 @@ package be.kuleuven.gt.hikinglog;
 
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,18 +18,20 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.concurrent.Executor;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import be.kuleuven.gt.hikinglog.mapstate.PathDrawer;
 
@@ -41,6 +44,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Location lastKnownLocation;
     private static final int DEFAULT_ZOOM = 15;
     private GoogleMap gMap;
+    private ArrayList<LatLng> coords;
+    private boolean started;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,6 +57,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     getChildFragmentManager().findFragmentById(R.id.google_map);
             mapFragment.getMapAsync(this);
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
+            coords = new ArrayList<LatLng>();
             return view;
         }catch (Exception e)
         {
@@ -102,7 +108,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         try {
             if (locationPermissionGranted) {
                 if (locationPermissionGranted) {
-                    Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+                    Task<Location> locationResult = fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null);
                     locationResult.addOnCompleteListener(this.getActivity(), new OnCompleteListener<Location>() {
                         @Override
                         public void onComplete(@NonNull Task<Location> task) {
@@ -120,6 +126,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 gMap.moveCamera(CameraUpdateFactory
                                         .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
                                 gMap.getUiSettings().setMyLocationButtonEnabled(false);
+                            }
+                            if (started){
+                            coords.add(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLatitude()));
+                            if (coords.size() > 1){
+                                Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size()-2), coords.get(coords.size()-1)));
+                            }
                             }
                         }
                     });
@@ -139,7 +151,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Circle circle = gMap.addCircle(PathDrawer.createCircle(50.8749, 4.7078));
         //Circle circle = gMap.addCircle(PathDrawer.createCircle(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
         Circle circle2 = gMap.addCircle(PathDrawer.createCircle(50.8801, 4.7160));
-        Polyline polyline = gMap.addPolyline(PathDrawer.createLine(50.8749, 4.7078, 50.8801, 4.7160));
+//        Polyline polyline = gMap.addPolyline(PathDrawer.createLine(50.8749, 4.7078, 50.8801, 4.7160));
     }
 
     private void updateLocationUI() {
@@ -160,7 +172,29 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e("Exception: %s", e.getMessage());
         }
     }
-    public void recordPath(){
+    private Runnable RecordPath = new Runnable() {
+        public void run() {
 
+            //This method runs in the same thread as the UI.
+
+            //Do something to the UI thread here
+
+        }
+    };
+
+    private void PathMethod(){
+        getDeviceLocation();
+//        this.getActivity().runOnUiThread(RecordPath);
+    }
+
+    public void onStartBtn(){
+        started = true;
+        Timer myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                PathMethod();
+            }
+        }, 5, 60000);
     }
 }

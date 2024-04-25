@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.Map;
+
 import be.kuleuven.gt.hikinglog.mapstate.PathDrawer;
 
 public class maps_screen extends AppCompatActivity {
@@ -43,7 +45,7 @@ public class maps_screen extends AppCompatActivity {
 //    private final LatLng defaultLocation = new LatLng(50.8749, 4.7078);
 //    private Location lastKnownLocation;
 //    private static final int DEFAULT_ZOOM = 15;
-    Fragment mapFragment;
+    MapFragment mapFragment;
 //    private GoogleMap gMap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +64,10 @@ public class maps_screen extends AppCompatActivity {
     }
 
 
-//    public void onBtnStart_Clicked(View Caller){
-//        mapFragment = getFragmentManager().findFragmentById(R.id.fragMap);
-//        mapFragment.
-//
-//    }
+    public void onBtnStart_Clicked(View Caller){
+        mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.fragMap);
+        mapFragment.onStartBtn();
+    }
 
 
 //    @Override
