@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 
 
 public class NavigationFragment extends Fragment {
+    public NavigationFragment(int contentLayoutId) {
+        super(R.layout.fragment_navigation);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
