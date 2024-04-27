@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import be.kuleuven.gt.hikinglog.mapstate.MapState;
 import be.kuleuven.gt.hikinglog.mapstate.PathDrawer;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -48,6 +49,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private ArrayList<LatLng> coords;
     private boolean started;
     private FragmentActivity parent;
+    private Timer myTimer;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -185,12 +187,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     public void onStartBtn(){
         started = true;
-        Timer myTimer = new Timer();
+        myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 PathMethod();
             }
         }, 5, 10000);
+    }
+
+    public void onStopBtn(){
+        started = false;
+        myTimer.cancel();
+    }
+
+    public void saveCoords(){
+        MapState.postMap(coords);
     }
 }

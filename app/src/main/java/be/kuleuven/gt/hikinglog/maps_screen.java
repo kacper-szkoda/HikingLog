@@ -1,5 +1,6 @@
 package be.kuleuven.gt.hikinglog;
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -7,6 +8,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,15 +39,49 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.Map;
 
+import be.kuleuven.gt.hikinglog.mapstate.MapState;
 import be.kuleuven.gt.hikinglog.mapstate.PathDrawer;
 
 public class maps_screen extends AppCompatActivity {
     MapFragment mapFragment;
+    Button startBtn, dialogBtnSave, dialogBtnDelete;
+    boolean started;
+    Dialog dialogSave;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_maps_screen);
+
+        started = false;
+        mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.fragMap);
+        startBtn = (Button) findViewById(R.id.btnStart);
+
+        dialogSave = new Dialog(this);
+        dialogSave.setContentView(R.layout.confirm_path_dialog);
+        dialogSave.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialogSave.setCancelable(false);
+
+        dialogBtnSave = dialogSave.findViewById(R.id.btnDialogSave);
+        dialogBtnDelete = dialogSave.findViewById(R.id.btnDialogDelete);
+
+        dialogBtnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapFragment.onStopBtn();
+                dialogSave.dismiss();
+            }
+        });
+        dialogBtnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mapFragment.onStopBtn();
+                mapFragment.saveCoords();
+                dialogSave.dismiss();
+                Toast.makeText(maps_screen.this, "Path saved", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -51,7 +90,17 @@ public class maps_screen extends AppCompatActivity {
     }
 
     public void onBtnStart_Clicked(View Caller){
-        mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.fragMap);
-        mapFragment.onStartBtn();
+        if (!started){
+            startBtn.setText(R.string.btnStopValue);
+            mapFragment.onStartBtn();
+            started = true;
+        }
+        else {
+            mapFragment.onStopBtn();
+
+            dialogSave.show();
+            startBtn.setText(R.string.btnStartValue);
+            started = false;
+        }
     }
 }
