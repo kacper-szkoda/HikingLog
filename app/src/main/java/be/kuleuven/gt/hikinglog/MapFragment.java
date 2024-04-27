@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap gMap;
     private ArrayList<LatLng> coords;
     private boolean started;
+    private FragmentActivity parent;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,7 +60,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mapFragment.getMapAsync(this);
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
             coords = new ArrayList<LatLng>();
+            parent = this.getActivity();
             return view;
+
         }catch (Exception e)
         {
             Log.e(TAG, "onCreateView", e);
@@ -128,9 +132,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 gMap.getUiSettings().setMyLocationButtonEnabled(false);
                             }
                             if (started){
-                            coords.add(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLatitude()));
+                            coords.add(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude()));
                             if (coords.size() > 1){
-                                Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size()-2), coords.get(coords.size()-1)));
+                                parent.runOnUiThread(RecordPath);
                             }
                             }
                         }
@@ -147,11 +151,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         gMap = googleMap;
         updateLocationUI();
         getDeviceLocation();
-
-        Circle circle = gMap.addCircle(PathDrawer.createCircle(50.8749, 4.7078));
-        //Circle circle = gMap.addCircle(PathDrawer.createCircle(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
-        Circle circle2 = gMap.addCircle(PathDrawer.createCircle(50.8801, 4.7160));
-//        Polyline polyline = gMap.addPolyline(PathDrawer.createLine(50.8749, 4.7078, 50.8801, 4.7160));
     }
 
     private void updateLocationUI() {
@@ -174,17 +173,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
     private Runnable RecordPath = new Runnable() {
         public void run() {
-
+            Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size()-2), coords.get(coords.size()-1)));
             //This method runs in the same thread as the UI.
-
             //Do something to the UI thread here
-
         }
     };
 
     private void PathMethod(){
         getDeviceLocation();
-//        this.getActivity().runOnUiThread(RecordPath);
     }
 
     public void onStartBtn(){
@@ -195,6 +191,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             public void run() {
                 PathMethod();
             }
-        }, 5, 60000);
+        }, 5, 10000);
     }
 }
