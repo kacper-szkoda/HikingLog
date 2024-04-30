@@ -1,6 +1,8 @@
 package be.kuleuven.gt.hikinglog;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -15,40 +17,75 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import be.kuleuven.gt.hikinglog.mapstate.MapState;
+import be.kuleuven.gt.hikinglog.mapstate.SQLControl;
+import be.kuleuven.gt.hikinglog.mapstate.VolleyCallback;
+
 public class HomeFragment extends Fragment {
 
     MapFragment mapFragment;
     Button startBtn, dialogBtnSave, dialogBtnDelete;
     boolean started;
     Dialog dialogSave;
+    SharedPreferences sharedPref;
+    MapState mapState;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
             View view = inflater.inflate(R.layout.fragment_home, container, false);
-
+            sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putInt("usrId", 1);
+            editor.putInt("started", 0);
+            editor.apply();
 //            EdgeToEdge.enable(this);
 //            setContentView(R.layout.activity_maps_screen);
 
-            started = false;
+            maps_screen mapsScreen = (maps_screen) getActivity();
+            mapState = mapsScreen.returnMapState();
+
             mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.fragMap);
             startBtn = (Button) view.findViewById(R.id.btnStart);
+            startBtn.setText(R.string.btnStartValue);
 
             startBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!started){
+                    if (!getStarted()){
                         startBtn.setText(R.string.btnStopValue);
-                        mapFragment.onStartBtn();
-                        started = true;
+                        startBtn.setEnabled(false);
+                        mapState.startPath(sharedPref.getInt("usrId", 1), new VolleyCallback() {
+                            @Override
+                            public void onSuccess(JSONArray jsonArray) {
+                                mapState.getLatestPathId(sharedPref.getInt("usrId", 1), new VolleyCallback() {
+                                    @Override
+                                    public void onSuccess(JSONArray jsonArray) {
+                                        try {
+                                            int pathId = jsonArray.getJSONObject(0).getInt("idpaths");
+                                            editor.putInt("latestPathId", pathId);
+                                            editor.putInt("started", 1);
+                                            editor.apply();
+                                            mapFragment.onStartBtn();
+                                            startBtn.setEnabled(true);
+                                        } catch (JSONException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    }
+                                });
+                            }
+                        });
                     }
                     else {
                         mapFragment.onStopBtn();
-
                         dialogSave.show();
                         startBtn.setText(R.string.btnStartValue);
-                        started = false;
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt("started", 0);
+                        editor.apply();
                     }
                 }
             });
@@ -87,6 +124,11 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+
+    public boolean getStarted(){
+        sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+        return sharedPref.getInt("started", 0) != 0;
+    }
 //    public void onBtnStart_Clicked(View Caller){
 //        if (!started){
 //            startBtn.setText(R.string.btnStopValue);

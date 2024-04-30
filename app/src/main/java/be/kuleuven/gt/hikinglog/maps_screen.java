@@ -10,9 +10,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import be.kuleuven.gt.hikinglog.databinding.ActivityMapsScreenBinding;
+import be.kuleuven.gt.hikinglog.mapstate.MapState;
 
 public class maps_screen extends AppCompatActivity {
-
+    MapState mapState;
     ActivityMapsScreenBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,8 @@ public class maps_screen extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityMapsScreenBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        mapState = new MapState(this);
 
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.getMenu().getItem(1).setChecked(true);
@@ -49,4 +52,7 @@ public class maps_screen extends AppCompatActivity {
         transaction.commit();
     }
 
+    public MapState returnMapState(){
+        return mapState;
+    }
 }

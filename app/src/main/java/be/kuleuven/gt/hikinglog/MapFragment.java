@@ -202,6 +202,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void saveCoords(){
-        MapState.postMap(coords);
+        MapState.postMap(coords.get(coords.size()-1));
     }
 }
