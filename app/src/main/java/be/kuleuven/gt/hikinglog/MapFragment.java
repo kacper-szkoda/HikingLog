@@ -68,6 +68,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
             coords = new ArrayList<LatLng>();
             parent = this.getActivity();
+            setStarted(false);
             HomeFragment homeFragment = (HomeFragment) getParentFragment();
             mapState = homeFragment.getMapState();
             return view;

@@ -1,5 +1,7 @@
 package be.kuleuven.gt.hikinglog;
 import android.app.Fragment;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,12 +49,16 @@ public class maps_screen extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setReorderingAllowed(true);
-
         transaction.replace(R.id.fragContainer, fragment);
         transaction.commit();
     }
 
     public MapState returnMapState(){
         return mapState;
+    }
+
+    public int getUsrId(){
+        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+        return sharedPreferences.getInt("usrId", 1);
     }
 }

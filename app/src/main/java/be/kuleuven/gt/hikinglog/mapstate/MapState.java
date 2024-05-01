@@ -62,8 +62,27 @@ public class MapState {
         control.getRequestQueue().add(queueRequest);
     }
 
-    public void recoverMap(){
-
+    public void recoverMap(int idusr, String pathname, VolleyCallback callback){
+        JsonArrayRequest queueRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                QUEUE_URL + "getEntriesForPath/" + idusr + "/" + pathname,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                context,
+                                "Unable to communicate with the server",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+        control.getRequestQueue().add(queueRequest);
     }
 
     public void startPath(int idusr, VolleyCallback callback){
@@ -191,6 +210,29 @@ public class MapState {
                     @Override
                     public void onResponse(JSONArray response) {
 
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(
+                                context,
+                                "Unable to communicate with the server",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+        control.getRequestQueue().add(queueRequest);
+    }
+
+    public void getPathsPerUser(int usrId, VolleyCallback callback){
+        JsonArrayRequest queueRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                QUEUE_URL + "getPathsPerUser/" + usrId ,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        callback.onSuccess(response);
                     }
                 },
                 new Response.ErrorListener() {
