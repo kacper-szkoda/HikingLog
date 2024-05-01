@@ -1,5 +1,7 @@
 package be.kuleuven.gt.hikinglog;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -30,12 +32,15 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import be.kuleuven.gt.hikinglog.mapstate.MapState;
 import be.kuleuven.gt.hikinglog.mapstate.PathDrawer;
+import be.kuleuven.gt.hikinglog.mapstate.VolleyCallback;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -47,9 +52,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int DEFAULT_ZOOM = 15;
     private GoogleMap gMap;
     private ArrayList<LatLng> coords;
-    private boolean started;
     private FragmentActivity parent;
     private Timer myTimer;
+    private MapState mapState;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,6 +68,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
             coords = new ArrayList<LatLng>();
             parent = this.getActivity();
+            HomeFragment homeFragment = (HomeFragment) getParentFragment();
+            mapState = homeFragment.getMapState();
             return view;
 
         }catch (Exception e)
@@ -70,6 +77,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e(TAG, "onCreateView", e);
             throw e;
         }
+
     }
 
     @Override
@@ -133,8 +141,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
                                 gMap.getUiSettings().setMyLocationButtonEnabled(false);
                             }
-                            if (started){
+                            if (getStarted()){
                             coords.add(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude()));
+                            saveCoords();
                             if (coords.size() > 1){
                                 parent.runOnUiThread(RecordPath);
                             }
@@ -186,7 +195,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void onStartBtn(){
-        started = true;
+        setStarted(true);
         myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
             @Override
@@ -197,11 +206,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void onStopBtn(){
-        started = false;
+        setStarted(false);
         myTimer.cancel();
     }
 
     public void saveCoords(){
-        MapState.postMap(coords.get(coords.size()-1));
+        mapState.postMap(coords.get(coords.size() - 1), new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONArray jsonArray) {
+
+            }
+        });
+    }
+    public void savePath(String pathname){
+        mapState.savePath(pathname, new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONArray jsonArray) {
+
+            }
+        });
+        mapState.renamePath(pathname);
+    }
+
+    public boolean getStarted(){
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+        return sharedPref.getInt("started", 0) != 0;
+    }
+
+    public void setStarted(boolean toSet){
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (toSet) {
+            editor.putInt("started", 1);
+        } else {
+            editor.putInt("started", 0);
+        }
+        editor.apply();
     }
 }

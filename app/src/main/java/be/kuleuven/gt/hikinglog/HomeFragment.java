@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -58,26 +59,21 @@ public class HomeFragment extends Fragment {
                     if (!getStarted()){
                         startBtn.setText(R.string.btnStopValue);
                         startBtn.setEnabled(false);
-                        mapState.startPath(sharedPref.getInt("usrId", 1), new VolleyCallback() {
+                        mapState.startPath(sharedPref.getInt("usrId", 1), jsonArray -> mapState.getLatestPathId(sharedPref.getInt("usrId", 1), new VolleyCallback() {
                             @Override
                             public void onSuccess(JSONArray jsonArray) {
-                                mapState.getLatestPathId(sharedPref.getInt("usrId", 1), new VolleyCallback() {
-                                    @Override
-                                    public void onSuccess(JSONArray jsonArray) {
-                                        try {
-                                            int pathId = jsonArray.getJSONObject(0).getInt("idpaths");
-                                            editor.putInt("latestPathId", pathId);
-                                            editor.putInt("started", 1);
-                                            editor.apply();
-                                            mapFragment.onStartBtn();
-                                            startBtn.setEnabled(true);
-                                        } catch (JSONException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    }
-                                });
+                                try {
+                                    int pathId = jsonArray.getJSONObject(0).getInt("idpaths");
+                                    editor.putInt("latestPathId", pathId);
+                                    editor.putInt("started", 1);
+                                    editor.apply();
+                                    mapFragment.onStartBtn();
+                                    startBtn.setEnabled(true);
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
-                        });
+                        }));
                     }
                     else {
                         mapFragment.onStopBtn();
@@ -102,14 +98,23 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mapFragment.onStopBtn();
+                    mapState.deletePath(new VolleyCallback() {
+                        @Override
+                        public void onSuccess(JSONArray jsonArray) {
+
+                        }
+                    });
+                    mapState.deletePathEntries();
                     dialogSave.dismiss();
                 }
             });
             dialogBtnSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    TextView textView = (TextView) dialogSave.findViewById(R.id.inputPathname);
                     mapFragment.onStopBtn();
                     mapFragment.saveCoords();
+                    mapFragment.savePath((String) textView.getText().toString());
                     dialogSave.dismiss();
 //                    Toast.makeText(HomeFragment.getPare.this, "Path saved", Toast.LENGTH_SHORT).show();
                 }
@@ -143,4 +148,8 @@ public class HomeFragment extends Fragment {
 //            started = false;
 //        }
 //    }
+
+    public MapState getMapState() {
+        return mapState;
+    }
 }

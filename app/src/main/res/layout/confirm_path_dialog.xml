@@ -8,10 +8,9 @@
 <!--    app:cardBackgroundColor="@android:color/transparent"-->
 
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="237dp">
 
         <TextView
             android:id="@+id/txtDialogSave"
@@ -25,35 +24,50 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/btnDialogSave"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout2"
+            android:layout_width="336dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="80dp"
-            android:layout_marginBottom="32dp"
-            android:text="Save"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnDialogDelete"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="spread"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtDialogSave" />
+            app:layout_constraintTop_toBottomOf="@+id/txtDialogSave">
 
-        <Button
-            android:id="@+id/btnDialogDelete"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/inputPathname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Insert pathname" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="32dp"
-            android:text="Delete"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btnDialogSave"
-            app:layout_constraintTop_toBottomOf="@+id/txtDialogSave" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+
+            <Button
+                android:id="@+id/btnDialogDelete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
+                android:layout_weight="1"
+                android:text="Delete" />
+
+            <Button
+                android:id="@+id/btnDialogSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:layout_marginEnd="0dp"
+                android:layout_marginBottom="0dp"
+                android:layout_weight="1"
+                android:text="Save" />
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
