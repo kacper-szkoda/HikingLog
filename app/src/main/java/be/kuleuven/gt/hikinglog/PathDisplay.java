@@ -6,12 +6,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -37,9 +35,9 @@ public class PathDisplay extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-            View view = inflater.inflate(R.layout.fragment_map, container, false);
+            View view = inflater.inflate(R.layout.fragment_path_display, container, false);
             SupportMapFragment mapFragment=(SupportMapFragment)
-                    getChildFragmentManager().findFragmentById(R.id.google_map);
+                    getChildFragmentManager().findFragmentById(R.id.google_map_dialog);
             mapFragment.getMapAsync(this);
             coords = new ArrayList<LatLng>();
             return view;
@@ -59,27 +57,27 @@ public class PathDisplay extends Fragment implements OnMapReadyCallback {
             public void onSuccess(JSONArray jsonArray) {
                 for (int i = 0; i < jsonArray.length(); i++){
                     try {
+                        int j = i;
                         JSONObject object = jsonArray.getJSONObject(i);
                         String string = object.getString("coordinate");
                         string = string.replace('_', '.');
                         String[] parts = string.split(",");
                         coords.add(new LatLng(Double.valueOf(parts[0]), Double.valueOf(parts[1])));
+                        if (i > 1){
+                            mapsScreen.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                        gMap.addPolyline(PathDrawer.createLine(coords.get(j - 1), coords.get(j)));
+                            }
+                        });
+                        }
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    for (int j = 0; j < coords.size() - 1; j++){
-                        new Runnable() {
-                            @Override
-                            public void run() {
-                                for (int j = 0; j < coords.size() - 1; j++)
-                                    gMap.addPolyline(PathDrawer.createLine(coords.get(j), coords.get(j+1)));
-                            }
-                        };
-                        gMap.addPolyline(PathDrawer.createLine(coords.get(j), coords.get(j+1)));
-                    }
-                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(coords.get(coords.size()-1).latitude, coords.get(coords.size()-1).longitude), 15));
                 }
+
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(coords.get(coords.size()-1).latitude, coords.get(coords.size()-1).longitude), 15));
             }
         });
     }

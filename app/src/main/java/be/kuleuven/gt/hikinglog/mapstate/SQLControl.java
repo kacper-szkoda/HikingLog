@@ -27,10 +27,10 @@ public class SQLControl {
         return requestQueue;
     }
 
-    public void insert(VolleyCallback callback,String urlExtension){
+    public void executeGetRequest(VolleyCallback callback,String urlExtension){
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
-                QUEUE_URL,
+                QUEUE_URL + urlExtension,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -49,7 +49,4 @@ public class SQLControl {
                 });
         requestQueue.add(queueRequest);
     }
-
-
-
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,7 +25,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,7 +61,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         try {
             View view = inflater.inflate(R.layout.fragment_map, container, false);
             SupportMapFragment mapFragment=(SupportMapFragment)
-                    getChildFragmentManager().findFragmentById(R.id.google_map);
+                    getChildFragmentManager().findFragmentById(R.id.google_map_dialog);
             mapFragment.getMapAsync(this);
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
             coords = new ArrayList<LatLng>();

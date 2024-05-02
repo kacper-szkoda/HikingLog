@@ -26,10 +26,8 @@ import be.kuleuven.gt.hikinglog.mapstate.SQLControl;
 import be.kuleuven.gt.hikinglog.mapstate.VolleyCallback;
 
 public class HomeFragment extends Fragment {
-
     MapFragment mapFragment;
     Button startBtn, dialogBtnSave, dialogBtnDelete;
-    boolean started;
     Dialog dialogSave;
     SharedPreferences sharedPref;
     MapState mapState;
@@ -38,6 +36,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_home, container, false);
+
             sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putInt("usrId", 1);
@@ -129,25 +128,10 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-
     public boolean getStarted(){
         sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
         return sharedPref.getInt("started", 0) != 0;
     }
-//    public void onBtnStart_Clicked(View Caller){
-//        if (!started){
-//            startBtn.setText(R.string.btnStopValue);
-//            mapFragment.onStartBtn();
-//            started = true;
-//        }
-//        else {
-//            mapFragment.onStopBtn();
-//
-//            dialogSave.show();
-//            startBtn.setText(R.string.btnStartValue);
-//            started = false;
-//        }
-//    }
 
     public MapState getMapState() {
         return mapState;

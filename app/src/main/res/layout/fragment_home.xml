@@ -10,7 +10,7 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragMap"
         android:name="be.kuleuven.gt.hikinglog.MapFragment"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="500dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
