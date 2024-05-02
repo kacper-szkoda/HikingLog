@@ -5,10 +5,11 @@
     android:layout_height="342dp"
     tools:context=".PathDisplay">
 
-    <fragment
-        android:id="@+id/google_map_dialog"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragMapProfileCont"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:name="be.kuleuven.gt.hikinglog.PathDisplay"
         android:layout_width="match_parent"
+        android:tag="mapFragProf"
         android:layout_height="match_parent" />
-
 </FrameLayout>

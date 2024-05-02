@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,7 @@ public class PathDisplay extends Fragment implements OnMapReadyCallback {
 
             View view = inflater.inflate(R.layout.fragment_path_display, container, false);
             SupportMapFragment mapFragment=(SupportMapFragment)
-                    getChildFragmentManager().findFragmentById(R.id.google_map_dialog);
+                    getChildFragmentManager().findFragmentByTag("mapFragProf");
             mapFragment.getMapAsync(this);
             coords = new ArrayList<LatLng>();
             return view;
@@ -84,5 +85,9 @@ public class PathDisplay extends Fragment implements OnMapReadyCallback {
 
     public void setPathName(String pathName){
         this.pathName = pathName;
+    }
+
+    public FragmentManager getFragMan(){
+        return  getActivity().getSupportFragmentManager();
     }
 }

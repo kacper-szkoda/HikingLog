@@ -61,7 +61,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         try {
             View view = inflater.inflate(R.layout.fragment_map, container, false);
             SupportMapFragment mapFragment=(SupportMapFragment)
-                    getChildFragmentManager().findFragmentById(R.id.google_map_dialog);
+                    getChildFragmentManager().findFragmentByTag("mapFragment");
             mapFragment.getMapAsync(this);
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
             coords = new ArrayList<LatLng>();
@@ -228,7 +228,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public boolean getStarted(){
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         return sharedPref.getInt("started", 0) != 0;
     }
 

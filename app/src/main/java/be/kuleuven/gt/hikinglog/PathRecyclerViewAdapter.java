@@ -1,7 +1,9 @@
 package be.kuleuven.gt.hikinglog;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -76,6 +77,16 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
             FragmentContainerView  fcv = dialogPath.findViewById(R.id.fragmentContainerView);
             PathDisplay pathDisplay= fcv.getFragment();
             pathDisplay.setPathName(pathName);
+            dialogPath.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    PathDisplay mapFragProf = fcv.getFragment();
+                    androidx.fragment.app.FragmentManager fragmentManager =  mapFragProf.getFragMan();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.remove(mapFragProf);
+                    fragmentTransaction.commit();
+                }
+            });
             dialogPath.show();
             TextView txt = dialogPath.findViewById(R.id.txtPathnameProfile);
             txt.setText(pathName);

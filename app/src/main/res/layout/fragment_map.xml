@@ -6,11 +6,14 @@
     tools:context=".MapFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <fragment
-        android:id="@+id/google_map_dialog"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragMapCont"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:name="be.kuleuven.gt.hikinglog.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:tag="mapFragment"
+        android:layout_height="wrap_content" />
 
 
 </FrameLayout>
