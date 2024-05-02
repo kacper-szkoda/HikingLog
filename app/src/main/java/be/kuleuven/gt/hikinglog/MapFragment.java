@@ -53,6 +53,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private FragmentActivity parent;
     private Timer myTimer;
     private MapState mapState;
+    SharedPreferences sharedPreferences;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -228,12 +229,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public boolean getStarted(){
-        SharedPreferences sharedPref = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-        return sharedPref.getInt("started", 0) != 0;
+        return sharedPreferences.getInt("started", 0) != 0;
     }
 
     public void setStarted(boolean toSet){
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (toSet) {
             editor.putInt("started", 1);
