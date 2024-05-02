@@ -1,30 +1,28 @@
-package be.kuleuven.gt.hikinglog;
+package be.kuleuven.gt.hikinglog.fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-
-import be.kuleuven.gt.hikinglog.mapstate.MapState;
-import be.kuleuven.gt.hikinglog.mapstate.PathModel;
-import be.kuleuven.gt.hikinglog.mapstate.VolleyCallback;
+import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.activities.BaseActivity;
+import be.kuleuven.gt.hikinglog.adapter.PathRecyclerViewAdapter;
+import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
+import be.kuleuven.gt.hikinglog.state.MapState;
+import be.kuleuven.gt.hikinglog.state.PathModel;
 
 public class ProfileFragment extends Fragment {
     ArrayList<PathModel> usrPaths;
     private MapState mapState;
-    private int profileId = 1;
-    private maps_screen mapsScreen;
+    private final int profileId = 1;
+    private BaseActivity mapsScreen;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,18 +30,18 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         usrPaths = new ArrayList<PathModel>();
-        mapsScreen = (maps_screen) getActivity();
+        mapsScreen = (BaseActivity) getActivity();
         mapState = mapsScreen.returnMapState();
         setUpPathModels();
 
         return view;
     }
 
-    public void setUpPathModels(){
+    public void setUpPathModels() {
         mapState.getPathsPerUser(profileId, new VolleyCallback() {
             @Override
             public void onSuccess(JSONArray jsonArray) {
-                for (int i = 0; i < jsonArray.length(); i++){
+                for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject object = jsonArray.getJSONObject(i);
                         String name = object.getString("pathname");

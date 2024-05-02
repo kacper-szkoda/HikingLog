@@ -1,10 +1,14 @@
-package be.kuleuven.gt.hikinglog;
+package be.kuleuven.gt.hikinglog.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,11 +16,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -36,15 +35,17 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import be.kuleuven.gt.hikinglog.mapstate.MapState;
-import be.kuleuven.gt.hikinglog.mapstate.PathDrawer;
-import be.kuleuven.gt.hikinglog.mapstate.VolleyCallback;
+import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.activities.BaseActivity;
+import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
+import be.kuleuven.gt.hikinglog.state.MapState;
+import be.kuleuven.gt.hikinglog.state.PathDrawer;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean locationPermissionGranted;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private static final String TAG = maps_screen.class.getSimpleName();
+    private static final String TAG = BaseActivity.class.getSimpleName();
     private final LatLng defaultLocation = new LatLng(50.8749, 4.7078);
     private Location lastKnownLocation;
     private static final int DEFAULT_ZOOM = 15;
@@ -54,6 +55,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Timer myTimer;
     private MapState mapState;
     SharedPreferences sharedPreferences;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,7 +63,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         try {
             View view = inflater.inflate(R.layout.fragment_map, container, false);
-            SupportMapFragment mapFragment=(SupportMapFragment)
+            sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+            SupportMapFragment mapFragment = (SupportMapFragment)
                     getChildFragmentManager().findFragmentByTag("mapFragment");
             mapFragment.getMapAsync(this);
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
@@ -72,8 +75,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mapState = homeFragment.getMapState();
             return view;
 
-        }catch (Exception e)
-        {
+        } catch (Exception e) {
             Log.e(TAG, "onCreateView", e);
             throw e;
         }
@@ -85,7 +87,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    public void getLocationPermission(){
+    public void getLocationPermission() {
         if (ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -141,19 +143,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                         .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
                                 gMap.getUiSettings().setMyLocationButtonEnabled(false);
                             }
-                            if (getStarted()){
-                            coords.add(new LatLng(lastKnownLocation.getLatitude(),lastKnownLocation.getLongitude()));
-                            saveCoords();
-                            if (coords.size() > 1){
-                                parent.runOnUiThread(RecordPath);
-                            }
+                            if (getStarted()) {
+                                coords.add(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
+                                saveCoords();
+                                if (coords.size() > 1) {
+                                    parent.runOnUiThread(RecordPath);
+                                }
                             }
                         }
                     });
                 }
             }
-        }catch(SecurityException e){
-                Log.e("Exception: %s", e.getMessage(), e);
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage(), e);
         }
     }
 
@@ -178,23 +180,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 lastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
-    private Runnable RecordPath = new Runnable() {
+
+    private final Runnable RecordPath = new Runnable() {
         public void run() {
-            Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size()-2), coords.get(coords.size()-1)));
+            Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size() - 2), coords.get(coords.size() - 1)));
             //This method runs in the same thread as the UI.
             //Do something to the UI thread here
         }
     };
 
-    private void PathMethod(){
+    private void PathMethod() {
         getDeviceLocation();
     }
 
-    public void onStartBtn(){
+    public void onStartBtn() {
         setStarted(true);
         myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
@@ -205,12 +208,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }, 5, 10000);
     }
 
-    public void onStopBtn(){
+    public void onStopBtn() {
         setStarted(false);
         myTimer.cancel();
     }
 
-    public void saveCoords(){
+    public void saveCoords() {
         mapState.postMap(coords.get(coords.size() - 1), new VolleyCallback() {
             @Override
             public void onSuccess(JSONArray jsonArray) {
@@ -218,21 +221,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-    public void savePath(String pathname){
+
+    public void savePath(String pathname) {
         mapState.savePath(pathname, new VolleyCallback() {
             @Override
             public void onSuccess(JSONArray jsonArray) {
 
             }
         });
-        mapState.renamePath(pathname);
+        mapState.renamePath(pathname, new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONArray jsonArray) {
+
+            }
+        });
     }
 
-    public boolean getStarted(){
+    public boolean getStarted() {
         return sharedPreferences.getInt("started", 0) != 0;
     }
 
-    public void setStarted(boolean toSet){
+    public void setStarted(boolean toSet) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         if (toSet) {
             editor.putInt("started", 1);

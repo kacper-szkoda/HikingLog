@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="342dp"
-    tools:context=".MapFragment">
+    tools:context=".fragments.MapFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragMapCont"
         class="com.google.android.gms.maps.SupportMapFragment"
-        android:name="be.kuleuven.gt.hikinglog.MapFragment"
+        android:name="be.kuleuven.gt.hikinglog.fragments.MapFragment"
         android:layout_width="match_parent"
         android:tag="mapFragment"
         android:layout_height="wrap_content" />

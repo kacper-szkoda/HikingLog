@@ -1,8 +1,9 @@
-package be.kuleuven.gt.hikinglog;
-import android.app.Fragment;
+package be.kuleuven.gt.hikinglog.activities;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -11,17 +12,22 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import be.kuleuven.gt.hikinglog.databinding.ActivityMapsScreenBinding;
-import be.kuleuven.gt.hikinglog.mapstate.MapState;
+import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.databinding.ActivityBaseBinding;
+import be.kuleuven.gt.hikinglog.fragments.ChatsFragment;
+import be.kuleuven.gt.hikinglog.fragments.HomeFragment;
+import be.kuleuven.gt.hikinglog.fragments.ProfileFragment;
+import be.kuleuven.gt.hikinglog.state.MapState;
 
-public class maps_screen extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity {
     MapState mapState;
-    ActivityMapsScreenBinding binding;
+    ActivityBaseBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        binding = ActivityMapsScreenBinding.inflate(getLayoutInflater());
+        binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         mapState = new MapState(this);
@@ -29,7 +35,7 @@ public class maps_screen extends AppCompatActivity {
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.getMenu().getItem(1).setChecked(true);
 
-        binding.bottomNavigationView.setOnItemSelectedListener(item ->{
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home)
                 replaceFragment(new HomeFragment());
             else if (item.getItemId() == R.id.profile)
@@ -45,7 +51,7 @@ public class maps_screen extends AppCompatActivity {
         });
     }
 
-    private void replaceFragment(androidx.fragment.app.Fragment fragment){
+    private void replaceFragment(androidx.fragment.app.Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setReorderingAllowed(true);
@@ -53,11 +59,11 @@ public class maps_screen extends AppCompatActivity {
         transaction.commit();
     }
 
-    public MapState returnMapState(){
+    public MapState returnMapState() {
         return mapState;
     }
 
-    public int getUsrId(){
+    public int getUsrId() {
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         return sharedPreferences.getInt("usrId", 1);
     }

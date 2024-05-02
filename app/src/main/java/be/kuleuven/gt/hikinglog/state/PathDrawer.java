@@ -1,4 +1,4 @@
-package be.kuleuven.gt.hikinglog.mapstate;
+package be.kuleuven.gt.hikinglog.state;
 
 import android.graphics.Color;
 
@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 public class PathDrawer {
-    public static CircleOptions createCircle(double Lat, double Lng){
+    public static CircleOptions createCircle(double Lat, double Lng) {
         CircleOptions circleOptions = new CircleOptions()
                 .center(new LatLng(Lat, Lng))
                 .radius(10);
@@ -15,7 +15,7 @@ public class PathDrawer {
         return circleOptions;
     }
 
-    public static PolylineOptions createLine(LatLng latLng1, LatLng latLng2){
+    public static PolylineOptions createLine(LatLng latLng1, LatLng latLng2) {
         return new PolylineOptions()
                 .add(latLng1, latLng2);
     }

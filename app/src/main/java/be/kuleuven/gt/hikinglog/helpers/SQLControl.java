@@ -1,10 +1,7 @@
-package be.kuleuven.gt.hikinglog.mapstate;
-
-import static java.security.AccessController.getContext;
+package be.kuleuven.gt.hikinglog.helpers;
 
 import android.content.Context;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -17,7 +14,8 @@ import org.json.JSONArray;
 public class SQLControl {
     Context context;
     RequestQueue requestQueue;
-    private final String QUEUE_URL =  "https://studev.groept.be/api/a23PT313/";
+    private static final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
+
     public SQLControl(Context context) {
         this.context = context;
         requestQueue = Volley.newRequestQueue(context);
@@ -27,7 +25,7 @@ public class SQLControl {
         return requestQueue;
     }
 
-    public void executeGetRequest(VolleyCallback callback,String urlExtension){
+    public void executeGetRequest( String urlExtension, VolleyCallback callback) {
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.GET,
                 QUEUE_URL + urlExtension,
@@ -35,7 +33,7 @@ public class SQLControl {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-//                        callback.onSuccess();
+                        callback.onSuccess(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -48,5 +46,14 @@ public class SQLControl {
                     }
                 });
         requestQueue.add(queueRequest);
+    }
+
+    public static String urlBuilder( String... args) {
+        String build = "";
+        for (String arg : args) {
+            build += arg;
+            build += "/";
+        }
+        return build.substring(0, build.length() - 1);
     }
 }

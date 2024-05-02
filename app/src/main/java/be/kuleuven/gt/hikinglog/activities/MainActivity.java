@@ -1,4 +1,4 @@
-package be.kuleuven.gt.hikinglog;
+package be.kuleuven.gt.hikinglog.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import be.kuleuven.gt.hikinglog.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,14 +26,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void onBtnLogin_Clicked (View Caller)
-    {
-        Intent intent = new Intent(this, maps_screen.class);
+    public void onBtnLogin_Clicked(View Caller) {
+        Intent intent = new Intent(this, BaseActivity.class);
         startActivity(intent);
     }
 
-    public void onBtnSignin_Clicked (View Caller)
-    {
+    public void onBtnSignin_Clicked(View Caller) {
         Intent intent = new Intent(this, SigninActivity.class);
         startActivity(intent);
     }

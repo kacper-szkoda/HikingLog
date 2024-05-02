@@ -1,4 +1,4 @@
-package be.kuleuven.gt.hikinglog.mapstate;
+package be.kuleuven.gt.hikinglog.helpers;
 
 import org.json.JSONArray;
 

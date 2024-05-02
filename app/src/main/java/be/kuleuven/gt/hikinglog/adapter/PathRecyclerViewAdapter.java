@@ -1,10 +1,8 @@
-package be.kuleuven.gt.hikinglog;
+package be.kuleuven.gt.hikinglog.adapter;
 
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +13,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.gms.maps.SupportMapFragment;
-
+import be.kuleuven.gt.hikinglog.state.PathModel;
 import java.util.ArrayList;
 
-import be.kuleuven.gt.hikinglog.mapstate.PathModel;
+import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment;
 
 public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerViewAdapter.MyViewHolder> {
     Context context;
     ArrayList<PathModel> pathModels;
+
     public PathRecyclerViewAdapter(Context context, ArrayList<PathModel> pathModels) {
         this.context = context;
         this.pathModels = pathModels;
@@ -49,7 +47,7 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         return pathModels.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private Dialog dialogPath;
         TextView pathNameTxt;
         Button btnView;
@@ -70,18 +68,18 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
 
         }
 
-        public void displayMapDialog(){
+        public void displayMapDialog() {
             dialogPath = new Dialog(itemView.getContext());
             dialogPath.setContentView(R.layout.path_profile_dialog);
             dialogPath.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            FragmentContainerView  fcv = dialogPath.findViewById(R.id.fragmentContainerView);
-            PathDisplay pathDisplay= fcv.getFragment();
-            pathDisplay.setPathName(pathName);
+            FragmentContainerView fcv = dialogPath.findViewById(R.id.fragmentContainerView);
+            PathDisplayFragment pathDisplayFragment = fcv.getFragment();
+            pathDisplayFragment.setPathName(pathName);
             dialogPath.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    PathDisplay mapFragProf = fcv.getFragment();
-                    androidx.fragment.app.FragmentManager fragmentManager =  mapFragProf.getFragMan();
+                    PathDisplayFragment mapFragProf = fcv.getFragment();
+                    androidx.fragment.app.FragmentManager fragmentManager = mapFragProf.getFragMan();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.remove(mapFragProf);
                     fragmentTransaction.commit();
@@ -94,15 +92,16 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
 //            FragmentManager fragmentManager = getSupportFragmentManager();
 //            FragmentTransaction transaction = fragmentManager.beginTransaction();
 //            transaction.setReorderingAllowed(true);
-//            transaction.replace(R.id.fragmentContainerView, new PathDisplay());
+//            transaction.replace(R.id.fragmentContainerView, new PathDisplayFragment());
 //            transaction.commit();
 
 
-//            pathDisplay.recoverPath();
+//            pathDisplayFragment.recoverPath();
 
             this.getAdapterPosition();
         }
-        public void setPathName(String pathName){
+
+        public void setPathName(String pathName) {
             this.pathName = pathName;
         }
     }

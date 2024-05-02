@@ -29,7 +29,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/fragmentContainerView"
-                android:name="be.kuleuven.gt.hikinglog.PathDisplay"
+                android:name="be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </FrameLayout>

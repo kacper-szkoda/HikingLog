@@ -1,4 +1,4 @@
-package be.kuleuven.gt.hikinglog;
+package be.kuleuven.gt.hikinglog.activities;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import be.kuleuven.gt.hikinglog.R;
 
 public class SigninActivity extends AppCompatActivity {
 

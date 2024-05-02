@@ -5,11 +5,11 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeFragment">
+    tools:context=".fragments.HomeFragment">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragMap"
-        android:name="be.kuleuven.gt.hikinglog.MapFragment"
+        android:name="be.kuleuven.gt.hikinglog.fragments.MapFragment"
         android:layout_width="match_parent"
         android:layout_height="500dp"
         app:layout_constraintEnd_toEndOf="parent"
