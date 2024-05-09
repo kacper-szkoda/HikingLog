@@ -14,21 +14,16 @@ import java.util.Date;
 import be.kuleuven.gt.hikinglog.helpers.SQLControl;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 
-public class MapState {
-    Context context;
+public enum MapState {
+    INSTANCE;
     SQLControl control;
     RequestQueue requestQueue;
     private final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
-
+    Context context;
     SharedPreferences sharedPreferences;
     public static int latestPathId;
     public static int idusr;
 
-    public MapState(Context context) {
-        this.context = context;
-        control = new SQLControl(context);
-        sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
-    }
 
     public void postMap(LatLng coords, VolleyCallback callback) {
         latestPathId = sharedPreferences.getInt("latestPathId", 1);
@@ -89,5 +84,11 @@ public class MapState {
         String URL_Fin = SQLControl.urlBuilder("getPathsPerUser", String.valueOf(usrId));
 
         control.executeGetRequest(URL_Fin, callback);
+    }
+
+    public void setUpMapState(Context context){
+        control = SQLControl.INSTANCE;
+        control.setUp(context);
+        sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
     }
 }

@@ -20,7 +20,7 @@ import be.kuleuven.gt.hikinglog.fragments.ProfileFragment;
 import be.kuleuven.gt.hikinglog.state.MapState;
 
 public class BaseActivity extends AppCompatActivity {
-    MapState mapState;
+    MapState mapState = MapState.INSTANCE;
     ActivityBaseBinding binding;
 
     @Override
@@ -29,8 +29,8 @@ public class BaseActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        mapState = new MapState(this);
+        mapState.setUpMapState(getBaseContext());
+//        mapState = new MapState(this);
 
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.getMenu().getItem(1).setChecked(true);
