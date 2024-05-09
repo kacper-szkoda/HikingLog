@@ -18,6 +18,7 @@ import be.kuleuven.gt.hikinglog.fragments.ChatsFragment;
 import be.kuleuven.gt.hikinglog.fragments.HomeFragment;
 import be.kuleuven.gt.hikinglog.fragments.ProfileFragment;
 import be.kuleuven.gt.hikinglog.state.MapState;
+import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class BaseActivity extends AppCompatActivity {
     MapState mapState = MapState.INSTANCE;

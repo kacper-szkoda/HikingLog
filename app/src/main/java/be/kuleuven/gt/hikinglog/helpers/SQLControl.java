@@ -49,10 +49,10 @@ public enum SQLControl {
         requestQueue.add(queueRequest);
     }
 
-    public void executePostRequest(Map<String, String> params, VolleyCallback callback) {
+    public void executePostRequest(String nameOfService, Map<String, String> params, VolleyCallback callback) {
         JsonArrayRequest queueRequest = new JsonArrayRequest(
                 Request.Method.POST,
-                QUEUE_URL,
+                QUEUE_URL + nameOfService,
                 null,
                 new Response.Listener<JSONArray>() {
                     @Override

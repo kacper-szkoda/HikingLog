@@ -54,21 +54,22 @@ public class HomeFragment extends Fragment {
                 if (!getStarted()) {
                     startBtn.setText(R.string.btnStopValue);
                     startBtn.setEnabled(false);
-                    mapState.startPath(sharedPref.getInt("usrId", 1), jsonArray -> mapState.getLatestPathId(sharedPref.getInt("usrId", 1), new VolleyCallback() {
-                        @Override
-                        public void onSuccess(JSONArray jsonArray) {
-                            try {
-                                int pathId = jsonArray.getJSONObject(0).getInt("idpaths");
-                                editor.putInt("latestPathId", pathId);
-                                editor.putInt("started", 1);
-                                editor.apply();
-                                mapFragment.onStartBtn();
-                                startBtn.setEnabled(true);
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }));
+                    mapState.startPath(
+                            jsonArray -> mapState.getLatestPathId(new VolleyCallback() {
+                                @Override
+                                public void onSuccess(JSONArray jsonArray) {
+                                    try {
+                                        int pathId = jsonArray.getJSONObject(0).getInt("idpaths");
+                                        editor.putInt("latestPathId", pathId);
+                                        editor.putInt("started", 1);
+                                        editor.apply();
+                                        mapFragment.onStartBtn();
+                                        startBtn.setEnabled(true);
+                                    } catch (JSONException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            }));
                 } else {
                     mapFragment.onStopBtn();
                     dialogSave.show();

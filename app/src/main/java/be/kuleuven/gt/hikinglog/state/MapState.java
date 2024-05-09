@@ -16,7 +16,7 @@ import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 
 public enum MapState {
     INSTANCE;
-    SQLControl control;
+    final SQLControl control = SQLControl.INSTANCE;
     RequestQueue requestQueue;
     private final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
     Context context;
@@ -40,17 +40,16 @@ public enum MapState {
 
     public void recoverMap(int idusr, String pathname, VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("getEntriesForPath", String.valueOf(idusr), pathname);
-
         control.executeGetRequest(URL_Fin, callback);
     }
 
-    public void startPath(int idusr, VolleyCallback callback) {
+    public void startPath(VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("initPath", String.valueOf(idusr));
 
         control.executeGetRequest(URL_Fin, callback);
     }
 
-    public void getLatestPathId(int idusr, VolleyCallback callback) {
+    public void getLatestPathId(VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("getLatestPathId", String.valueOf(idusr));
 
         control.executeGetRequest(URL_Fin, callback);
@@ -87,8 +86,8 @@ public enum MapState {
     }
 
     public void setUpMapState(Context context){
-        control = SQLControl.INSTANCE;
         control.setUp(context);
         sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+        idusr = sharedPreferences.getInt("usrId", 1);
     }
 }

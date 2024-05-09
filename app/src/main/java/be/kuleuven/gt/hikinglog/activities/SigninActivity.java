@@ -3,6 +3,9 @@ package be.kuleuven.gt.hikinglog.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,10 +13,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import org.json.JSONArray;
+
 import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.helpers.SQLControl;
+import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
+import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class SigninActivity extends AppCompatActivity {
-
+    TextView txtUsrname, txtPassword, txtPasswordRepeat;
+    Button btnConrfirm;
+    UserState userState = UserState.INSTANCE;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,11 +32,43 @@ public class SigninActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            txtUsrname = findViewById(R.id.txtUsernameInputField);
+            txtPassword = findViewById(R.id.txtPasswordInputField);
+            txtPasswordRepeat = findViewById(R.id.txtPasswordConfirmationField);
+            btnConrfirm = findViewById(R.id.btnConfirm);
             return insets;
         });
     }
 
     public void onBtnConfirm_Clicked(View Caller) {
-
+        if (txtUsrname.getText().toString().isEmpty()) {
+            Toast.makeText(getBaseContext(), "Username should not be empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if (!(txtPassword.getText().toString().equals(txtPasswordRepeat.getText().toString()))) {
+            Toast.makeText(getBaseContext(), "Passwords should match", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        btnConrfirm.setEnabled(false);
+        userState.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONArray jsonArray) {
+                if (!jsonArray.isNull(0)){
+                    Toast.makeText(getBaseContext(), "Username already in database", Toast.LENGTH_SHORT).show();
+                    btnConrfirm.setEnabled(true);
+                }
+                else {
+                    Toast.makeText(getBaseContext(), "Account successfully created!", Toast.LENGTH_SHORT).show();
+                    userState.addNewUser(txtUsrname.getText().toString(), txtPassword.getText().toString(), new VolleyCallback() {
+                        @Override
+                        public void onSuccess(JSONArray jsonArray) {
+                            btnConrfirm.setEnabled(true);
+                            Intent intent = new Intent(getBaseContext(), BaseActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+                }
+            }
+        });
     }
 }
