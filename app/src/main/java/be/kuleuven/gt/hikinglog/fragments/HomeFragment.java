@@ -35,7 +35,6 @@ public class HomeFragment extends Fragment {
 
         sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("usrId", 1);
         editor.putInt("started", 0);
         editor.apply();
 //            EdgeToEdge.enable(this);
@@ -57,8 +56,9 @@ public class HomeFragment extends Fragment {
                     mapState.startPath(
                             jsonArray -> mapState.getLatestPathId(new VolleyCallback() {
                                 @Override
-                                public void onSuccess(JSONArray jsonArray) {
+                                public void onSuccess(String stringResponse) {
                                     try {
+                                        JSONArray jsonArray = new JSONArray(stringResponse);
                                         int pathId = jsonArray.getJSONObject(0).getInt("idpaths");
                                         editor.putInt("latestPathId", pathId);
                                         editor.putInt("started", 1);
@@ -95,13 +95,13 @@ public class HomeFragment extends Fragment {
                 mapFragment.onStopBtn();
                 mapState.deletePath(new VolleyCallback() {
                     @Override
-                    public void onSuccess(JSONArray jsonArray) {
+                    public void onSuccess(String stringResponse) {
 
                     }
                 });
                 mapState.deletePathEntries(new VolleyCallback() {
                     @Override
-                    public void onSuccess(JSONArray jsonArray) {
+                    public void onSuccess(String stringResponse) {
 
                     }
                 });

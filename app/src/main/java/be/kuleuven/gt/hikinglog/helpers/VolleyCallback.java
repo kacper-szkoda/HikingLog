@@ -10,5 +10,5 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 
 public interface VolleyCallback {
-    void onSuccess(JSONArray jsonArray);
+    void onSuccess(String stringResponse);
 }

@@ -216,7 +216,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void saveCoords() {
         mapState.postMap(coords.get(coords.size() - 1), new VolleyCallback() {
             @Override
-            public void onSuccess(JSONArray jsonArray) {
+            public void onSuccess(String stringResponse) {
 
             }
         });
@@ -225,13 +225,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void savePath(String pathname) {
         mapState.savePath(pathname, new VolleyCallback() {
             @Override
-            public void onSuccess(JSONArray jsonArray) {
+            public void onSuccess(String stringResponse) {
 
             }
         });
         mapState.renamePath(pathname, new VolleyCallback() {
             @Override
-            public void onSuccess(JSONArray jsonArray) {
+            public void onSuccess(String stringResponse) {
 
             }
         });

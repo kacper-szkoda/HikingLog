@@ -31,7 +31,6 @@ public class BaseActivity extends AppCompatActivity {
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         mapState.setUpMapState(getBaseContext());
-//        mapState = new MapState(this);
 
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.getMenu().getItem(1).setChecked(true);

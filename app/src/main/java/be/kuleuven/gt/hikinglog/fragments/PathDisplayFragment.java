@@ -57,7 +57,13 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
         MapState mapState = mapsScreen.returnMapState();
         mapState.recoverMap(mapsScreen.getUsrId(), pathName, new VolleyCallback() {
             @Override
-            public void onSuccess(JSONArray jsonArray) {
+            public void onSuccess(String stringResponse) {
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(stringResponse);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         int j = i;

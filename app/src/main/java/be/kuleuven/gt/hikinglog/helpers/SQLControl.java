@@ -9,9 +9,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONStringer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,14 +29,13 @@ public enum SQLControl {
     }
 
     public void executeGetRequest( String urlExtension, VolleyCallback callback) {
-        JsonArrayRequest queueRequest = new JsonArrayRequest(
+        StringRequest queueRequest = new StringRequest(
                 Request.Method.GET,
                 QUEUE_URL + urlExtension,
-                null,
-                new Response.Listener<JSONArray>() {
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONArray response) {
-                        callback.onSuccess(response);
+                    public void onResponse(String stringResponse) {
+                        callback.onSuccess(stringResponse);
                     }
                 },
                 new Response.ErrorListener() {
@@ -42,7 +43,7 @@ public enum SQLControl {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(
                                 context,
-                                (CharSequence) error,
+                                "Network error" + error,
                                 Toast.LENGTH_LONG).show();
                     }
                 });
@@ -50,14 +51,13 @@ public enum SQLControl {
     }
 
     public void executePostRequest(String nameOfService, Map<String, String> params, VolleyCallback callback) {
-        JsonArrayRequest queueRequest = new JsonArrayRequest(
+        StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
                 QUEUE_URL + nameOfService,
-                null,
-                new Response.Listener<JSONArray>() {
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONArray response) {
-                        callback.onSuccess(response);
+                    public void onResponse(String stringResponse) {
+                        callback.onSuccess(stringResponse);
                     }
                 },
                 new Response.ErrorListener() {
@@ -65,19 +65,20 @@ public enum SQLControl {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(
                                 context,
-                                (CharSequence) error,
+                                "Network error" + error,
                                 Toast.LENGTH_LONG).show();
                     }
                 }
-                ){
+                ) {
             @Override
             protected Map<String, String> getParams(){
                 return params;
             }
         };
-        requestQueue.add(queueRequest);
+        requestQueue.add(stringRequest);
     }
     public static String urlBuilder( String... args) {
+        //TODO Add automatic whitespace replacement
         String build = "";
         for (String arg : args) {
             build += arg;

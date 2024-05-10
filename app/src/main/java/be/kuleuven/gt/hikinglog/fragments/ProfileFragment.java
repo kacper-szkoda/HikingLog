@@ -1,5 +1,7 @@
 package be.kuleuven.gt.hikinglog.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +23,7 @@ import be.kuleuven.gt.hikinglog.state.PathModel;
 public class ProfileFragment extends Fragment {
     ArrayList<PathModel> usrPaths;
     private MapState mapState;
-    private final int profileId = 1;
+    private int profileId;
     private BaseActivity mapsScreen;
 
     @Override
@@ -29,6 +31,8 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+        profileId = sharedPreferences.getInt("usrId", 1);
         usrPaths = new ArrayList<PathModel>();
         mapsScreen = (BaseActivity) getActivity();
         mapState = mapsScreen.returnMapState();
@@ -40,7 +44,13 @@ public class ProfileFragment extends Fragment {
     public void setUpPathModels() {
         mapState.getPathsPerUser(profileId, new VolleyCallback() {
             @Override
-            public void onSuccess(JSONArray jsonArray) {
+            public void onSuccess(String stringResponse) {
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(stringResponse);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
                 for (int i = 0; i < jsonArray.length(); i++) {
                     try {
                         JSONObject object = jsonArray.getJSONObject(i);

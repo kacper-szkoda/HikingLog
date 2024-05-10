@@ -27,7 +27,9 @@ public enum UserState {
         control.executePostRequest(nameOfService, params, callback);
     }
     public void addNewUser(String usrname, String password, VolleyCallback callback){
-
+        String nameOfService = "addUser";
+        Map<String, String> params = SQLControl.paramBuilder(asList("password", "usrname"), asList(password, usrname));
+        control.executePostRequest(nameOfService, params, callback);
     }
     public void changeUsername(String usrnameNew, String password, VolleyCallback callback){
 
@@ -37,5 +39,9 @@ public enum UserState {
     }
     public void suggestUsermames(String lettersEntered, VolleyCallback callback){
 
+    }
+    public void findPasswordByUsername(String username, VolleyCallback callback){
+        String URL_extension = SQLControl.urlBuilder("findPasswordByUsername", username);
+        control.executeGetRequest(URL_extension, callback);
     }
 }

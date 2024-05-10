@@ -1,6 +1,7 @@
 package be.kuleuven.gt.hikinglog.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.helpers.SQLControl;
@@ -44,6 +46,13 @@ public class SigninActivity extends AppCompatActivity {
         if (txtUsrname.getText().toString().isEmpty()) {
             Toast.makeText(getBaseContext(), "Username should not be empty", Toast.LENGTH_SHORT).show();
             return;
+        } else if (txtUsrname.getText().toString().contains(".")) {
+            Toast.makeText(getBaseContext(), "Username should not contain periods", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if (txtPassword.getText().toString().isEmpty() || txtPassword.getText().toString().isEmpty()){
+            Toast.makeText(getBaseContext(), "Both passwords need to be filled in", Toast.LENGTH_SHORT).show();
+            return;
         }
         else if (!(txtPassword.getText().toString().equals(txtPasswordRepeat.getText().toString()))) {
             Toast.makeText(getBaseContext(), "Passwords should match", Toast.LENGTH_SHORT).show();
@@ -52,7 +61,13 @@ public class SigninActivity extends AppCompatActivity {
         btnConrfirm.setEnabled(false);
         userState.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
             @Override
-            public void onSuccess(JSONArray jsonArray) {
+            public void onSuccess(String stringResponse) {
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(stringResponse);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
                 if (!jsonArray.isNull(0)){
                     Toast.makeText(getBaseContext(), "Username already in database", Toast.LENGTH_SHORT).show();
                     btnConrfirm.setEnabled(true);
@@ -61,14 +76,32 @@ public class SigninActivity extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "Account successfully created!", Toast.LENGTH_SHORT).show();
                     userState.addNewUser(txtUsrname.getText().toString(), txtPassword.getText().toString(), new VolleyCallback() {
                         @Override
-                        public void onSuccess(JSONArray jsonArray) {
+                        public void onSuccess(String stringResponse) {
                             btnConrfirm.setEnabled(true);
+                            SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("usrname", txtUsrname.getText().toString());
+                            userState.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
+                                @Override
+                                public void onSuccess(String stringResponse) {
+                                    try {
+                                        JSONArray jsonArray = new JSONArray(stringResponse);
+                                        int usrId = jsonArray.getJSONObject(0).getInt("iduser");
+                                        editor.putInt("usrId", usrId);
+                                        editor.apply();
+                                    } catch (JSONException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            });
                             Intent intent = new Intent(getBaseContext(), BaseActivity.class);
                             startActivity(intent);
+                            return;
                         }
                     });
                 }
             }
         });
+        btnConrfirm.setEnabled(true);
     }
 }
