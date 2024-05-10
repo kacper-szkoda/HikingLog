@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.android.volley.RequestQueue;
 
+import java.util.List;
 import java.util.Map;
 
 import be.kuleuven.gt.hikinglog.helpers.SQLControl;
@@ -22,6 +23,7 @@ public enum UserState {
     public static int idusr;
 
     public void findByUsername(String usrname, VolleyCallback callback){
+        //TODO refactor into single method with the last one so that a value is returned and write that method
         String nameOfService = "findIDForUsername";
         Map<String, String> params = SQLControl.paramBuilder(asList("usrname"), asList(usrname));
         control.executePostRequest(nameOfService, params, callback);
@@ -37,7 +39,7 @@ public enum UserState {
     public void sendFriendRequest(String usernameFriend, VolleyCallback callback){
 
     }
-    public void suggestUsermames(String lettersEntered, VolleyCallback callback){
+    public List<String> suggestUsermames(String lettersEntered, VolleyCallback callback){
 
     }
     public void findPasswordByUsername(String username, VolleyCallback callback){

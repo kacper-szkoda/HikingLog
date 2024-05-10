@@ -1,6 +1,7 @@
 package be.kuleuven.gt.hikinglog.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -63,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
                         if (jsonObject.getString("password").equals(txtPassword.getText().toString())){
                             btnLogin.setEnabled(true);
+                            SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            //TODO write using the todo method in user state a method that sets the usrid so that paths can be recovered, maybe use th static field in userstate instead of shared preferences
                             Intent intent = new Intent(getBaseContext(), BaseActivity.class);
                             startActivity(intent);
                         }
