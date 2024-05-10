@@ -40,7 +40,7 @@ public enum UserState {
 
     }
     public List<String> suggestUsermames(String lettersEntered, VolleyCallback callback){
-
+        return null;
     }
     public void findPasswordByUsername(String username, VolleyCallback callback){
         String URL_extension = SQLControl.urlBuilder("findPasswordByUsername", username);
