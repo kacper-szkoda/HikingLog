@@ -31,7 +31,7 @@ import be.kuleuven.gt.hikinglog.state.PathDrawer;
 public class PathDisplayFragment extends Fragment implements OnMapReadyCallback {
     private String pathName;
     private ArrayList<LatLng> coords;
-
+    private int profileId;
     private GoogleMap gMap;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +55,7 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
     public void recoverPath() {
         BaseActivity mapsScreen = (BaseActivity) getActivity();
         MapState mapState = mapsScreen.returnMapState();
-        mapState.recoverMap(mapsScreen.getUsrId(), pathName, new VolleyCallback() {
+        mapState.recoverMap(profileId, pathName, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
                 JSONArray jsonArray = null;
@@ -94,6 +94,7 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
     public void setPathName(String pathName) {
         this.pathName = pathName;
     }
+    public void setProfileId(int profileId){this.profileId =profileId;}
 
     public FragmentManager getFragMan() {
         return getActivity().getSupportFragmentManager();

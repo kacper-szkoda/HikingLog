@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         SQLControl.INSTANCE.setUp(getApplicationContext());
+        UserState.INSTANCE.setUp(getApplicationContext());
         txtUsrname = findViewById(R.id.txtUsername);
         txtPassword = findViewById(R.id.txtPassword);
         btnLogin = findViewById(R.id.btnLogin);
@@ -66,9 +67,23 @@ public class MainActivity extends AppCompatActivity {
                             btnLogin.setEnabled(true);
                             SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            //TODO write using the todo method in user state a method that sets the usrid so that paths can be recovered, maybe use th static field in userstate instead of shared preferences
-                            Intent intent = new Intent(getBaseContext(), BaseActivity.class);
-                            startActivity(intent);
+                            UserState.INSTANCE.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
+                                @Override
+                                public void onSuccess(String stringResponse) {
+                                    try {
+                                        JSONArray jsonArray = new JSONArray(stringResponse);
+                                        JSONObject jsonObject1 = jsonArray.getJSONObject(0);
+                                        int idusr = jsonObject1.getInt("iduser");
+                                        editor.putInt("usrId", idusr);
+                                        editor.putString("username", txtUsrname.getText().toString());
+                                        editor.apply();
+                                        Intent intent = new Intent(getBaseContext(), BaseActivity.class);
+                                        startActivity(intent);
+                                    } catch (JSONException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            });
                         }
                         else {
                             Toast.makeText(getBaseContext(), "Incorrect password", Toast.LENGTH_SHORT).show();

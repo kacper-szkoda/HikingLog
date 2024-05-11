@@ -1,8 +1,11 @@
 package be.kuleuven.gt.hikinglog.activities;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,11 +15,16 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.databinding.ActivityBaseBinding;
 import be.kuleuven.gt.hikinglog.fragments.ChatsFragment;
 import be.kuleuven.gt.hikinglog.fragments.HomeFragment;
 import be.kuleuven.gt.hikinglog.fragments.ProfileFragment;
+import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.MapState;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
@@ -38,8 +46,14 @@ public class BaseActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home)
                 replaceFragment(new HomeFragment());
-            else if (item.getItemId() == R.id.profile)
-                replaceFragment(new ProfileFragment());
+            else if (item.getItemId() == R.id.profile) {
+                SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
+                ProfileFragment fragment = new ProfileFragment();
+                Bundle args = new Bundle();
+                args.putInt("profileId", sharedPreferences.getInt("usrId", 1));
+                fragment.setArguments(args);
+                replaceFragment(fragment);
+            }
             else if (item.getItemId() == R.id.chat)
                 replaceFragment(new ChatsFragment());
             return true;
@@ -49,6 +63,48 @@ public class BaseActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())){
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            search(query);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())){
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            search(query);
+        }
+    }
+
+    private void search(String query) {
+        //TODO replace fragment in on success for finding id by username, put that into bundle to be read
+        UserState.INSTANCE.findByUsername(query, new VolleyCallback() {
+            @Override
+            public void onSuccess(String stringResponse) {
+                try {
+                    JSONArray jsonArray = new JSONArray(stringResponse);
+                    try {
+                        JSONObject jsonObject = jsonArray.getJSONObject(0);
+                        int profileId = jsonObject.getInt("iduser");
+                        ProfileFragment fragment = new ProfileFragment();
+                        Bundle args = new Bundle();
+                        args.putInt("profileId", profileId);
+                        args.putString("username", query);
+                        fragment.setArguments(args);
+                        replaceFragment(fragment);
+                    } catch (JSONException e)
+                    {
+                        Toast.makeText(getBaseContext(), "No such user found", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        Toast.makeText(getBaseContext(), "searched", Toast.LENGTH_SHORT).show();
     }
 
     private void replaceFragment(androidx.fragment.app.Fragment fragment) {

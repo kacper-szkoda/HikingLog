@@ -37,7 +37,7 @@
                 android:id="@+id/inputPathname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Insert pathname" />
+                android:hint="Input text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout

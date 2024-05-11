@@ -23,7 +23,6 @@ public enum UserState {
     public static int idusr;
 
     public void findByUsername(String usrname, VolleyCallback callback){
-        //TODO refactor into single method with the last one so that a value is returned and write that method
         String nameOfService = "findIDForUsername";
         Map<String, String> params = SQLControl.paramBuilder(asList("usrname"), asList(usrname));
         control.executePostRequest(nameOfService, params, callback);
@@ -33,8 +32,11 @@ public enum UserState {
         Map<String, String> params = SQLControl.paramBuilder(asList("password", "usrname"), asList(password, usrname));
         control.executePostRequest(nameOfService, params, callback);
     }
-    public void changeUsername(String usrnameNew, String password, VolleyCallback callback){
-
+    public void changeUsername(String usrnameNew, VolleyCallback callback){
+        String nameOfService = "changeUsername";
+        String userid = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        Map<String, String> params = SQLControl.paramBuilder(asList("userid", "newusername"), asList(userid,usrnameNew));
+        control.executePostRequest(nameOfService, params, callback);
     }
     public void sendFriendRequest(String usernameFriend, VolleyCallback callback){
 
@@ -45,5 +47,8 @@ public enum UserState {
     public void findPasswordByUsername(String username, VolleyCallback callback){
         String URL_extension = SQLControl.urlBuilder("findPasswordByUsername", username);
         control.executeGetRequest(URL_extension, callback);
+    }
+    public void setUp(Context context){
+        this.context = context;
     }
 }

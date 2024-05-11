@@ -22,10 +22,12 @@ import be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment;
 public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerViewAdapter.MyViewHolder> {
     Context context;
     ArrayList<PathModel> pathModels;
+    int profileId;
 
-    public PathRecyclerViewAdapter(Context context, ArrayList<PathModel> pathModels) {
+    public PathRecyclerViewAdapter(Context context, ArrayList<PathModel> pathModels, int profileId) {
         this.context = context;
         this.pathModels = pathModels;
+        this.profileId = profileId;
     }
 
     @NonNull
@@ -40,6 +42,7 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
     public void onBindViewHolder(@NonNull PathRecyclerViewAdapter.MyViewHolder holder, int position) {
         holder.pathNameTxt.setText(pathModels.get(position).getPathName());
         holder.setPathName(pathModels.get(position).getPathName());
+        holder.setProfileId(profileId);
     }
 
     @Override
@@ -52,6 +55,7 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         TextView pathNameTxt;
         Button btnView;
         String pathName;
+        int profileId;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +79,7 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
             FragmentContainerView fcv = dialogPath.findViewById(R.id.fragmentContainerView);
             PathDisplayFragment pathDisplayFragment = fcv.getFragment();
             pathDisplayFragment.setPathName(pathName);
+            pathDisplayFragment.setProfileId(profileId);
             dialogPath.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
@@ -104,6 +109,8 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         public void setPathName(String pathName) {
             this.pathName = pathName;
         }
+        public void setProfileId(int profileId){this.profileId = profileId;}
     }
+
 
 }
