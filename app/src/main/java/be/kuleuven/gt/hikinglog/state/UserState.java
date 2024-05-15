@@ -20,7 +20,6 @@ public enum UserState {
     Context context;
     SharedPreferences sharedPreferences;
     public static int latestPathId;
-    public static int idusr;
 
     public void findByUsername(String usrname, VolleyCallback callback){
         String nameOfService = "findIDForUsername";
@@ -38,14 +37,26 @@ public enum UserState {
         Map<String, String> params = SQLControl.paramBuilder(asList("userid", "newusername"), asList(userid,usrnameNew));
         control.executePostRequest(nameOfService, params, callback);
     }
-    public void sendFriendRequest(String usernameFriend, VolleyCallback callback){
-
+    public void sendFriendRequest(int idprofile, VolleyCallback callback){
+        String nameOfService = "sendFriendRequest";
+        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        Map<String, String> params = SQLControl.paramBuilder(asList("iduser", "idprofile"), asList(String.valueOf(iduser), String.valueOf(idprofile)));
+        control.executePostRequest(nameOfService, params, callback);
     }
     public List<String> suggestUsermames(String lettersEntered, VolleyCallback callback){
         return null;
     }
     public void findPasswordByUsername(String username, VolleyCallback callback){
         String URL_extension = SQLControl.urlBuilder("findPasswordByUsername", username);
+        control.executeGetRequest(URL_extension, callback);
+    }
+    public void findFriends(VolleyCallback callback){
+        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        String URL_extension = SQLControl.urlBuilder("findFriends", String.valueOf(iduser), iduser);
+        control.executeGetRequest(URL_extension, callback);
+    }
+    public void getUsernameForID(int idprofile, VolleyCallback callback){
+        String URL_extension = SQLControl.urlBuilder("getUsernameForID", String.valueOf(idprofile));
         control.executeGetRequest(URL_extension, callback);
     }
     public void setUp(Context context){

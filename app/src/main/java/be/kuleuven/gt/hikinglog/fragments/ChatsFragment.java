@@ -1,65 +1,99 @@
 package be.kuleuven.gt.hikinglog.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.adapter.ChatWindowsRecyclerViewAdapter;
+import be.kuleuven.gt.hikinglog.adapter.PathRecyclerViewAdapter;
+import be.kuleuven.gt.hikinglog.helpers.LastFriendAdded;
+import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
+import be.kuleuven.gt.hikinglog.state.FriendModel;
+import be.kuleuven.gt.hikinglog.state.UserState;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ChatsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ChatsFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ChatsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChatsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChatsFragment newInstance(String param1, String param2) {
-        ChatsFragment fragment = new ChatsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+public class ChatsFragment extends Fragment implements LastFriendAdded {
+    ArrayList<FriendModel> friends;
+    int usrId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chats, container, false);
+        View view = inflater.inflate(R.layout.fragment_chats, container, false);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        usrId = sharedPreferences.getInt("usrId", 1);
+        friends = new ArrayList<FriendModel>();
+        this.setUpChatHeads(this);
+        return view;
+    }
+
+    public void setUpChatHeads(LastFriendAdded listener) {
+        UserState.INSTANCE.findFriends(new VolleyCallback() {
+            @Override
+            public void onSuccess(String stringResponse) {
+                friends = getFriends(stringResponse);
+                friends.get(friends.size()-1).setLastFriend(true);
+                friends.get(friends.size()-1).addListener(listener);
+                for (FriendModel friendModel : friends){
+                    friendModel.setUsername();
+                }
+            }
+        });
+    }
+
+    public ArrayList<FriendModel> getFriends(String json) {
+        ArrayList<FriendModel> friends = new ArrayList<FriendModel>();
+        try {
+            JSONArray jsonArray = new JSONArray(json);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                int idfriend = jsonObject.getInt("iduserReceiver");
+                if (idfriend == usrId) {
+                    idfriend = jsonObject.getInt("iduserSender");
+                }
+                String date = jsonObject.getString("date");
+                FriendModel friend = (new FriendModel(idfriend, date));
+                friends.add(friend);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return friends;
+    }
+
+
+
+    @Override
+    public void NameFilled() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                RecyclerView recyclerView = getView().findViewById(R.id.recyclerFriends);
+                ChatWindowsRecyclerViewAdapter adapter = new ChatWindowsRecyclerViewAdapter(getContext(), friends);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            }
+        });
     }
 }
