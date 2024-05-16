@@ -2,14 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="342dp"
+    android:layout_height="wrap_content"
     tools:context=".fragments.PathDisplayFragment">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragMapProfileCont"
-        class="com.google.android.gms.maps.SupportMapFragment"
         android:name="be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment"
+        class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:tag="mapFragProf"
-        android:layout_height="match_parent" />
+        android:layout_height="340dp"
+        android:tag="mapFragProf" />
 </FrameLayout>

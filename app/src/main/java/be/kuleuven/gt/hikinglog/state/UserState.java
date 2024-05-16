@@ -59,7 +59,12 @@ public enum UserState {
         String URL_extension = SQLControl.urlBuilder("getUsernameForID", String.valueOf(idprofile));
         control.executeGetRequest(URL_extension, callback);
     }
+    public void getMessagesPerPair() {
+
+    }
     public void setUp(Context context){
         this.context = context;
     }
+
+
 }

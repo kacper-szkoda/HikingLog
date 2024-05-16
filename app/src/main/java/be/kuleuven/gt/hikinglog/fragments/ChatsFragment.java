@@ -3,6 +3,7 @@ package be.kuleuven.gt.hikinglog.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.adapter.ChatWindowsRecyclerViewAdapter;
@@ -33,7 +35,6 @@ public class ChatsFragment extends Fragment implements LastFriendAdded {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -53,11 +54,8 @@ public class ChatsFragment extends Fragment implements LastFriendAdded {
             @Override
             public void onSuccess(String stringResponse) {
                 friends = getFriends(stringResponse);
-                friends.get(friends.size()-1).setLastFriend(true);
-                friends.get(friends.size()-1).addListener(listener);
-                for (FriendModel friendModel : friends){
-                    friendModel.setUsername();
-                }
+                friends.forEach(friendModel -> friendModel.addListener(listener));
+                friends.forEach(FriendModel::setUsername);
             }
         });
     }
@@ -86,13 +84,19 @@ public class ChatsFragment extends Fragment implements LastFriendAdded {
 
     @Override
     public void NameFilled() {
+        Log.w("myApp", String.valueOf(getActivity()));
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                RecyclerView recyclerView = getView().findViewById(R.id.recyclerFriends);
-                ChatWindowsRecyclerViewAdapter adapter = new ChatWindowsRecyclerViewAdapter(getContext(), friends);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                if (friends.stream()
+                        .map(FriendModel::getUsername)
+                        .noneMatch(Objects::isNull))
+                {
+                    RecyclerView recyclerView = getView().findViewById(R.id.recyclerFriends);
+                    ChatWindowsRecyclerViewAdapter adapter = new ChatWindowsRecyclerViewAdapter(getContext(), friends);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                }
             }
         });
     }

@@ -3,6 +3,7 @@ package be.kuleuven.gt.hikinglog.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import be.kuleuven.gt.hikinglog.state.FriendModel;
 import be.kuleuven.gt.hikinglog.state.PathModel;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,12 +29,16 @@ import be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment;
 
 public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWindowsRecyclerViewAdapter.MyViewHolder> {
     Context context;
+    LocalDateTime dateTime;
     ArrayList<FriendModel> friends;
     int userId;
 
     public ChatWindowsRecyclerViewAdapter(Context context, ArrayList<FriendModel> friends) {
         this.context = context;
         this.friends = friends;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            dateTime = LocalDateTime.now();
+        }
     }
 
     @NonNull
@@ -47,8 +55,8 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         String username = friends.get(position).getUsername();
         holder.setProfileId(profileId);
         holder.setUsername(username);
-        holder.btnViewChat.setText(username);
-        holder.btnViewChat.setOnClickListener(new View.OnClickListener() {
+        holder.returnTextViewFriend().setText(username);
+        holder.returnCard().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 holder.changeChat();
@@ -62,13 +70,14 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        Button btnViewChat;
+        CardView cardViewChat;
         String username;
         int profileId;
+        TextView txtFriendUsername;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            btnViewChat = itemView.findViewById(R.id.btnViewChat);
-
+            cardViewChat = itemView.findViewById(R.id.cardViewChat);
+            txtFriendUsername = itemView.findViewById(R.id.txtFriendUsername);
         }
 
         public void changeChat() {
@@ -80,10 +89,11 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
             this.username = username;
         }
         public void setProfileId(int profileId){this.profileId = profileId;}
-        public Button returnButton(){
-            return btnViewChat;
+        public CardView returnCard(){
+            return cardViewChat;
+        }
+        public TextView returnTextViewFriend(){
+            return txtFriendUsername;
         }
     }
-
-
 }

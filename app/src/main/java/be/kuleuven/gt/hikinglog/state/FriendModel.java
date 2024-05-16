@@ -6,18 +6,13 @@ import org.json.JSONObject;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 
 import be.kuleuven.gt.hikinglog.helpers.LastFriendAdded;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 
 public class FriendModel {
-    boolean lastFriend;
-    boolean friendListReady;
-
-    public void setLastFriend(boolean lastFriend) {
-        this.lastFriend = lastFriend;
-    }
-
+    ArrayList<String> messagesDisplayed;
     int idprofile;
     String username;
     String dateAccepted;
@@ -69,9 +64,7 @@ public class FriendModel {
                 try {
                     JSONObject jsonObject = new JSONArray(stringResponse).getJSONObject(0);
                     username = jsonObject.getString("username");
-                    if (lastFriend) {
-                        nameFilledListener.NameFilled();
-                    }
+                    nameFilledListener.NameFilled();
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
