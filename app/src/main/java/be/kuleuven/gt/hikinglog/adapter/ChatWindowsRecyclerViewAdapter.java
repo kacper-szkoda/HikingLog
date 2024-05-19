@@ -3,7 +3,9 @@ package be.kuleuven.gt.hikinglog.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.os.Build;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import be.kuleuven.gt.hikinglog.activities.BaseActivity;
 import be.kuleuven.gt.hikinglog.state.FriendModel;
 import be.kuleuven.gt.hikinglog.state.PathModel;
 
@@ -29,16 +32,12 @@ import be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment;
 
 public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWindowsRecyclerViewAdapter.MyViewHolder> {
     Context context;
-    LocalDateTime dateTime;
     ArrayList<FriendModel> friends;
     int userId;
 
     public ChatWindowsRecyclerViewAdapter(Context context, ArrayList<FriendModel> friends) {
         this.context = context;
         this.friends = friends;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            dateTime = LocalDateTime.now();
-        }
     }
 
     @NonNull
@@ -56,6 +55,9 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         holder.setProfileId(profileId);
         holder.setUsername(username);
         holder.returnTextViewFriend().setText(username);
+        holder.setAccepted(friends.get(position).getAccepted());
+        holder.setContext(context);
+        holder.setColor();
         holder.returnCard().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +75,9 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         CardView cardViewChat;
         String username;
         int profileId;
+        boolean accepted;
         TextView txtFriendUsername;
+        Context context;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             cardViewChat = itemView.findViewById(R.id.cardViewChat);
@@ -89,11 +93,33 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
             this.username = username;
         }
         public void setProfileId(int profileId){this.profileId = profileId;}
+        public void setAccepted(boolean accepted){
+            this.accepted = accepted;
+        }
+        public void setColor(){
+            Handler handler = new Handler(context.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (accepted) {
+                        cardViewChat.setCardBackgroundColor(0xFFF1EAB2);
+                        txtFriendUsername.setTextColor(0xFFFFFFFF);
+                    }
+                    else {
+                        cardViewChat.setCardBackgroundColor(0xFFA99995);
+                        txtFriendUsername.setTextColor(0xFFFFFFFF);
+                    }
+                }
+            });
+        }
         public CardView returnCard(){
             return cardViewChat;
         }
         public TextView returnTextViewFriend(){
             return txtFriendUsername;
+        }
+        public void setContext(Context context){
+            this.context = context;
         }
     }
 }

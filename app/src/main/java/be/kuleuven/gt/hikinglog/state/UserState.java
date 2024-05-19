@@ -52,7 +52,7 @@ public enum UserState {
     }
     public void findFriends(VolleyCallback callback){
         String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
-        String URL_extension = SQLControl.urlBuilder("findFriends", String.valueOf(iduser), iduser);
+        String URL_extension = SQLControl.urlBuilder("findFriendsAndUsernames", String.valueOf(iduser), iduser);
         control.executeGetRequest(URL_extension, callback);
     }
     public void getUsernameForID(int idprofile, VolleyCallback callback){
