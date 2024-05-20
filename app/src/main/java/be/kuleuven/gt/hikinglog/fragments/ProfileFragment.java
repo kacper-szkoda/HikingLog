@@ -34,16 +34,15 @@ import be.kuleuven.gt.hikinglog.state.PathModel;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class ProfileFragment extends Fragment {
-    ArrayList<PathModel> usrPaths;
-    Button btnAddChange;
-    TextView txtUsername;
+    private ArrayList<PathModel> usrPaths;
+    private Button btnAddChange;
+    private TextView txtUsername;
     private MapState mapState;
     private int profileId;
     private BaseActivity mapsScreen;
     private Dialog dialogChange;
     private Button dialogBtnChange;
     private Button dialogBtnCancel;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

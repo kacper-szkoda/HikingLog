@@ -5,8 +5,6 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,11 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.textfield.TextInputEditText;
-
 import java.util.ArrayList;
-
-import be.kuleuven.gt.hikinglog.state.FriendModel;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.state.MessageModel;
@@ -48,20 +42,31 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
         MessageModel message = messagesDisplayed.get(position);
         holder.getDate().setText(message.getDate());
         holder.getMessage().setText(message.getText());
-        ConstraintLayout constraint = holder.getMessageConstraint();
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(constraint);
+        ConstraintLayout constraintOutside = holder.getOutsideConstraint();
+        ConstraintLayout constraintInside = holder.getInsideConstraint();
+        ConstraintSet constraintSetOutside = new ConstraintSet();
+        constraintSetOutside.clone(constraintOutside);
+        ConstraintSet constraintSetInside = new ConstraintSet();
+        constraintSetInside.clone(constraintInside);
         if (message.getSender() == usrId){
-            constraintSet.connect(R.id.layoutMessage, ConstraintSet.RIGHT,R.id.layoutMessContainer,
-                    ConstraintSet.RIGHT,0);
+            constraintSetOutside.connect(R.id.constraintInside, ConstraintSet.RIGHT,
+                    R.id.constraintOutside, ConstraintSet.RIGHT,8);
+            constraintSetInside.connect(R.id.txtDate, ConstraintSet.RIGHT,
+                    R.id.constraintInside, ConstraintSet.RIGHT, 8);
+            constraintSetInside.connect(R.id.cardViewMessage, ConstraintSet.RIGHT,
+                    R.id.constraintInside, ConstraintSet.RIGHT, 8);
         }
         else {
-            constraintSet.connect(R.id.layoutMessage, ConstraintSet.LEFT,R.id.layoutMessContainer,
-                    ConstraintSet.LEFT,0);
+            constraintSetOutside.connect(R.id.constraintInside, ConstraintSet.LEFT,
+                    R.id.constraintOutside, ConstraintSet.LEFT,8);
+            constraintSetInside.connect(R.id.txtDate, ConstraintSet.LEFT,
+                    R.id.constraintInside, ConstraintSet.LEFT, 8);
+            constraintSetInside.connect(R.id.cardViewMessage, ConstraintSet.LEFT,
+                    R.id.constraintInside, ConstraintSet.LEFT, 8);
         }
-        constraintSet.applyTo(constraint);
+        constraintSetOutside.applyTo(constraintOutside);
+        constraintSetInside.applyTo(constraintInside);
     }
-
     @Override
     public int getItemCount() {
         return messagesDisplayed.size();
@@ -70,7 +75,7 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView message;
         TextView date;
-        ConstraintLayout messageConstraint;
+        ConstraintLayout outsideConstraint, insideConstraint;
 
         public TextView getMessage() {
             return message;
@@ -80,22 +85,20 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
             return date;
         }
 
-        public ConstraintLayout getMessageConstraint() {
-            return messageConstraint;
+        public ConstraintLayout getOutsideConstraint() {
+            return outsideConstraint;
+        }
+
+        public ConstraintLayout getInsideConstraint() {
+            return insideConstraint;
         }
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             message = itemView.findViewById(R.id.txtMessage);
             date = itemView.findViewById(R.id.txtDate);
-            messageConstraint = itemView.findViewById(R.id.layoutMessContainer);
+            outsideConstraint = itemView.findViewById(R.id.constraintOutside);
+            insideConstraint = itemView.findViewById(R.id.constraintInside);
         }
-
-        public void sendMessage() {
-            //TODO write method
-            this.getAdapterPosition();
-        }
-
     }
-
 }
