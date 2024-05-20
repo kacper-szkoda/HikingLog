@@ -18,12 +18,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.activities.BaseActivity;
 import be.kuleuven.gt.hikinglog.adapter.ChatWindowsRecyclerViewAdapter;
+import be.kuleuven.gt.hikinglog.helpers.ChatHeadClickedListener;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.FriendModel;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
-public class ChatsFragment extends Fragment{
+public class ChatsFragment extends Fragment implements ChatHeadClickedListener {
     ArrayList<FriendModel> friends;
     int usrId;
 
@@ -76,6 +78,7 @@ public class ChatsFragment extends Fragment{
                 }
                 String date = jsonObject.getString("date");
                 FriendModel friend = (new FriendModel(idFriend, date, usernameFriend));
+                friend.setListener(this);
                 friends.add(friend);
             }
         } catch (JSONException e) {
@@ -83,4 +86,10 @@ public class ChatsFragment extends Fragment{
         }
         return friends;
     }
+
+    @Override
+    public void chatClicked(int idprofile, String username) {
+        ((BaseActivity)getActivity()).changeToChat(idprofile, username);
+    }
+
 }

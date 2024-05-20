@@ -1,12 +1,17 @@
 package be.kuleuven.gt.hikinglog.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -16,16 +21,18 @@ import java.util.ArrayList;
 import be.kuleuven.gt.hikinglog.state.FriendModel;
 
 import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.state.MessageModel;
 
 public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMessagesRecyclerViewAdapter.MyViewHolder> {
     Context context;
-    FriendModel friend;
-    ArrayList<String> messagesDisplayed;
-    int userId;
+    ArrayList<MessageModel> messagesDisplayed;
+    int usrId;
 
-    public ChatMessagesRecyclerViewAdapter(Context context, FriendModel friend) {
+    public ChatMessagesRecyclerViewAdapter(Context context, ArrayList<MessageModel> messages) {
         this.context = context;
-        this.friend = friend;
+        this.messagesDisplayed = messages;
+        SharedPreferences sharedPreferences = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        usrId = sharedPreferences.getInt("usrId", 1);
     }
 
     @NonNull
@@ -38,17 +45,21 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
 
     @Override
     public void onBindViewHolder(@NonNull ChatMessagesRecyclerViewAdapter.MyViewHolder holder, int position) {
-        int profileId = friend.getIdprofile();
-        String username = friend.getUsername();
-        holder.setProfileId(profileId);
-        holder.setUsername(username);
-//        holder.btnSend.setText(username);
-//        holder.returnButtonSend().setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                holder.changeChat();
-//            }
-//        });
+        MessageModel message = messagesDisplayed.get(position);
+        holder.getDate().setText(message.getDate());
+        holder.getMessage().setText(message.getText());
+        ConstraintLayout constraint = holder.getMessageConstraint();
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(constraint);
+        if (message.getSender() == usrId){
+            constraintSet.connect(R.id.layoutMessage, ConstraintSet.RIGHT,R.id.layoutMessContainer,
+                    ConstraintSet.RIGHT,0);
+        }
+        else {
+            constraintSet.connect(R.id.layoutMessage, ConstraintSet.LEFT,R.id.layoutMessContainer,
+                    ConstraintSet.LEFT,0);
+        }
+        constraintSet.applyTo(constraint);
     }
 
     @Override
@@ -57,27 +68,34 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-//        Button btnSend;
-//        TextInputEditText txtInput;
-        String username;
-        int profileId;
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            //btnSend = itemView.findViewById(R.id.btnViewChat);
-            //txtInput = itemView.findViewById(R.id.txtMessageInputField)
+        TextView message;
+        TextView date;
+        ConstraintLayout messageConstraint;
+
+        public TextView getMessage() {
+            return message;
         }
 
-        public void changeChat() {
+        public TextView getDate() {
+            return date;
+        }
+
+        public ConstraintLayout getMessageConstraint() {
+            return messageConstraint;
+        }
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            message = itemView.findViewById(R.id.txtMessage);
+            date = itemView.findViewById(R.id.txtDate);
+            messageConstraint = itemView.findViewById(R.id.layoutMessContainer);
+        }
+
+        public void sendMessage() {
             //TODO write method
             this.getAdapterPosition();
         }
 
-        public void setUsername(String username) {
-            this.username = username;
-        }
-        public void setProfileId(int profileId){this.profileId = profileId;}
-//        public Button returnButtonSend(){
-//            return btnSend;
-//        }
     }
+
 }

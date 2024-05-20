@@ -58,10 +58,11 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         holder.setAccepted(friends.get(position).getAccepted());
         holder.setContext(context);
         holder.setColor();
+        holder.setFriend(friends.get(position));
         holder.returnCard().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.changeChat();
+                holder.getFriend().enterChat();
             }
         });
     }
@@ -78,15 +79,11 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         boolean accepted;
         TextView txtFriendUsername;
         Context context;
+        FriendModel friend;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             cardViewChat = itemView.findViewById(R.id.cardViewChat);
             txtFriendUsername = itemView.findViewById(R.id.txtFriendUsername);
-        }
-
-        public void changeChat() {
-            //TODO write method
-            this.getAdapterPosition();
         }
 
         public void setUsername(String username) {
@@ -121,5 +118,7 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         public void setContext(Context context){
             this.context = context;
         }
+        public void setFriend (FriendModel friend){this.friend = friend;}
+        public FriendModel getFriend(){return friend;}
     }
 }

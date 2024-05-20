@@ -94,15 +94,6 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
             TextView txt = dialogPath.findViewById(R.id.txtPathnameProfile);
             txt.setText(pathName);
 
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            FragmentTransaction transaction = fragmentManager.beginTransaction();
-//            transaction.setReorderingAllowed(true);
-//            transaction.replace(R.id.fragmentContainerView, new PathDisplayFragment());
-//            transaction.commit();
-
-
-//            pathDisplayFragment.recoverPath();
-
             this.getAdapterPosition();
         }
 

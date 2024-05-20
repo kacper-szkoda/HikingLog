@@ -2,6 +2,8 @@ package be.kuleuven.gt.hikinglog.state;
 
 import java.util.ArrayList;
 
+import be.kuleuven.gt.hikinglog.helpers.ChatHeadClickedListener;
+
 public class FriendModel {
     ArrayList<String> messagesDisplayed;
     int idprofile;
@@ -9,6 +11,7 @@ public class FriendModel {
     String dateAccepted;
     String lastMessage;
     boolean accepted;
+    ChatHeadClickedListener listener;
     public FriendModel(int idprofile, String dateAccepted, String username) {
         this.idprofile = idprofile;
         this.username = username;
@@ -44,5 +47,11 @@ public class FriendModel {
     }
     public void setLastMessage(String lastMessage) {
         this.lastMessage = lastMessage;
+    }
+    public void setListener(ChatHeadClickedListener listener){
+        this.listener = listener;
+    }
+    public void enterChat(){
+        listener.chatClicked(idprofile, username);
     }
 }

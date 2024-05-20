@@ -19,13 +19,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.databinding.ActivityBaseBinding;
+import be.kuleuven.gt.hikinglog.fragments.ChatMessagesFragment;
 import be.kuleuven.gt.hikinglog.fragments.ChatsFragment;
 import be.kuleuven.gt.hikinglog.fragments.HomeFragment;
 import be.kuleuven.gt.hikinglog.fragments.ProfileFragment;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.MapState;
+import be.kuleuven.gt.hikinglog.state.MessageModel;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class BaseActivity extends AppCompatActivity {
@@ -112,6 +116,7 @@ public class BaseActivity extends AppCompatActivity {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setReorderingAllowed(true);
         transaction.replace(R.id.fragContainer, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -122,5 +127,35 @@ public class BaseActivity extends AppCompatActivity {
     public int getUsrId() {
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
         return sharedPreferences.getInt("usrId", 1);
+    }
+
+    public void changeToChat (int idprofile, String username) {
+        ArrayList<MessageModel> messages = new ArrayList<>();
+        UserState.INSTANCE.getMessagesPerPair(idprofile, new VolleyCallback() {
+            @Override
+            public void onSuccess(String stringResponse) {
+                try {
+                    JSONArray jsonArray = new JSONArray(stringResponse);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String text = jsonObject.getString("message");
+                        String date = jsonObject.getString("time");
+                        int idsender = jsonObject.getInt("idusersender");
+                        int idreceiver = jsonObject.getInt("iduserreceiver");
+                        MessageModel message = new MessageModel(text, date, idsender, idreceiver);
+                        messages.add(message);
+                    }
+                    Bundle args = new Bundle();
+                    args.putSerializable("messages", messages);
+                    args.putString("username", username);
+                    args.putInt("profileId", idprofile);
+                    ChatMessagesFragment fragment = new ChatMessagesFragment();
+                    fragment.setArguments(args);
+                    replaceFragment(fragment);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 }

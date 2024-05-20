@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 
 import com.android.volley.RequestQueue;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,9 +63,20 @@ public enum UserState {
         String URL_extension = SQLControl.urlBuilder("getUsernameForID", String.valueOf(idprofile));
         control.executeGetRequest(URL_extension, callback);
     }
-    public void getMessagesPerPair() {
-
+    public void getMessagesPerPair(int profileid, VolleyCallback callback) {
+        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        String URL_extension = SQLControl.urlBuilder("getMessagesPerPair", iduser, iduser, String.valueOf(profileid), String.valueOf(profileid) );
+        control.executeGetRequest(URL_extension, callback);
     }
+    public void sendMessage(String message, int profileId, VolleyCallback callback){
+        String nameOfService = "sendMessage";
+        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String dateTimeString = formatter.format(new Date());
+        Map<String, String> params = SQLControl.paramBuilder(asList("idusersender", "iduserreceiver", "message", "time"), asList(String.valueOf(iduser), String.valueOf(profileId), message, dateTimeString));
+        SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
+    }
+
     public void setUp(Context context){
         this.context = context;
     }
