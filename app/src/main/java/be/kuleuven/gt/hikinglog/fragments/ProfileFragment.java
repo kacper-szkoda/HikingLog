@@ -2,8 +2,6 @@ package be.kuleuven.gt.hikinglog.fragments;
 
 import android.app.Dialog;
 import android.app.SearchManager;
-import android.app.SearchableInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,25 +22,28 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Objects;
+
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.activities.BaseActivity;
 import be.kuleuven.gt.hikinglog.adapter.PathRecyclerViewAdapter;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
+import be.kuleuven.gt.hikinglog.state.FriendModel;
 import be.kuleuven.gt.hikinglog.state.MapState;
 import be.kuleuven.gt.hikinglog.state.PathModel;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class ProfileFragment extends Fragment {
     private ArrayList<PathModel> usrPaths;
-    private Button btnAddChange;
     private TextView txtUsername;
     private MapState mapState;
     private int profileId;
     private BaseActivity mapsScreen;
     private Dialog dialogChange;
-    private Button dialogBtnChange;
-    private Button dialogBtnCancel;
+    private Button dialogBtnChange, dialogBtnCancel, btnAddChange;
+    private int usrId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +51,7 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
-//        profileId = sharedPreferences.getInt("usrId", 1);
+        usrId = sharedPreferences.getInt("usrId", 1);
         Bundle args = getArguments();
         profileId = args.getInt("profileId", 1);
         usrPaths = new ArrayList<PathModel>();
@@ -58,19 +59,24 @@ public class ProfileFragment extends Fragment {
         mapState = mapsScreen.returnMapState();
         btnAddChange = view.findViewById(R.id.btnAdd_Change);
         txtUsername = view.findViewById(R.id.txtProfUsername);
-        if (profileId == sharedPreferences.getInt("usrId", 1)){
+
+        if (profileId == sharedPreferences.getInt("usrId", 1)) {
             txtUsername.setText(sharedPreferences.getString("username", ""));
-        }
-        else {
+        } else {
             txtUsername.setText(args.getString("username"));
         }
         setUpProfileButton();
         setUpPathModels();
 
-        SearchManager searchManager = (SearchManager) ((BaseActivity)getActivity()).getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) view.findViewById(R.id.searchView);
+        setUpSearch(view);
+        return view;
+    }
+
+    private void setUpSearch(View view) {
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = view.findViewById(R.id.searchView);
         searchView.clearFocus();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(((BaseActivity)getActivity()).getComponentName()));
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
         searchView.setIconifiedByDefault(false);
         searchView.setSubmitButtonEnabled(true);
 
@@ -86,7 +92,6 @@ public class ProfileFragment extends Fragment {
                 return false;
             }
         });
-        return view;
     }
 
     public void setUpPathModels() {
@@ -117,70 +122,96 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    public void setUpProfileButton(){
+    public void setUpProfileButton() {
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-        if (profileId == sharedPreferences.getInt("usrId", 1)){
+        if (profileId == sharedPreferences.getInt("usrId", 1)) {
             btnAddChange.setText("Change");
             btnAddChange.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialogChange = new Dialog(getContext());
-                    dialogChange.setContentView(R.layout.confirm_path_dialog);
-                    dialogChange.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    dialogChange.setCancelable(false);
-
-                    dialogBtnChange = dialogChange.findViewById(R.id.btnDialogSave);
-                    dialogBtnCancel = dialogChange.findViewById(R.id.btnDialogDelete);
-                    TextView txtPrompt = dialogChange.findViewById(R.id.txtDialogSave);
-                    TextInputEditText txtInput = dialogChange.findViewById(R.id.inputPathname);
-
-                    dialogBtnChange.setText("Change");
-                    dialogBtnCancel.setText("Cancel");
-                    txtPrompt.setText("Change username");
-
-                    dialogBtnCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialogChange.dismiss();
-                        }
-                    });
-                    dialogBtnChange.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialogBtnChange.setEnabled(false);
-                            if (txtInput.getText().toString().isEmpty())
-                            {
-                                Toast.makeText(getActivity().getBaseContext(), "Input username", Toast.LENGTH_SHORT ).show();
-                            } else if (txtInput.getText().toString().contains(".")) {
-                                Toast.makeText(getActivity().getBaseContext(), "Username should not contain periods", Toast.LENGTH_SHORT ).show();
-                            } else {
-                                changeUsername(txtInput.getText().toString());
-                            }
-                            dialogBtnChange.setEnabled(true);
-                            dialogChange.dismiss();
-                        }
-                    });
+                    dialogChange = setUpDialog();
                     dialogChange.show();
                 }
             });
-        }
-        else {
+        } else {
             btnAddChange.setText("Add");
-            btnAddChange.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO write a method that will send friend requests, maybe do it in place of the chat, add to recycler side view
-                    //TODO in chats, when accepted or declined either becomes normal chat fragment (also recycler view) or disappears
-                }
-            });
+            btnAddChange.setEnabled(false);
+            setUpAddButton();
         }
     }
 
-    public void addFriend(){
+    public Dialog setUpDialog() {
+        dialogChange = new Dialog(getContext());
+        dialogChange.setContentView(R.layout.confirm_path_dialog);
+        dialogChange.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialogChange.setCancelable(false);
 
+        dialogBtnChange = dialogChange.findViewById(R.id.btnDialogSave);
+        dialogBtnCancel = dialogChange.findViewById(R.id.btnDialogDelete);
+        TextView txtPrompt = dialogChange.findViewById(R.id.txtDialogSave);
+        TextInputEditText txtInput = dialogChange.findViewById(R.id.inputPathname);
+
+        dialogBtnChange.setText("Change");
+        dialogBtnCancel.setText("Cancel");
+        txtPrompt.setText("Change username");
+
+        dialogBtnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogChange.dismiss();
+            }
+        });
+        dialogBtnChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogBtnChange.setEnabled(false);
+                if (txtInput.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity().getBaseContext(), "Input username", Toast.LENGTH_SHORT).show();
+                } else if (txtInput.getText().toString().contains(".")) {
+                    Toast.makeText(getActivity().getBaseContext(), "Username should not contain periods", Toast.LENGTH_SHORT).show();
+                } else {
+                    changeUsername(txtInput.getText().toString());
+                }
+                dialogBtnChange.setEnabled(true);
+                dialogChange.dismiss();
+            }
+        });
+        return dialogChange;
     }
 
-    public void changeUsername(String newUsername){
+    public void setUpAddButton() {
+        UserState.INSTANCE.findFriends(new VolleyCallback() {
+            @Override
+            public void onSuccess(String stringResponse) {
+                ArrayList<FriendModel> friendModels = new ArrayList<>();
+                friendModels = FriendModel.getFriendsFromJSON(stringResponse, usrId);
+                if (!(friendModels.stream()
+                        .mapToInt(FriendModel::getIdprofile)
+                        .anyMatch(id -> id == profileId))) {
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnAddChange.setEnabled(true);
+                            btnAddChange.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    btnAddChange.setEnabled(false);
+                                    UserState.INSTANCE.addFriend(profileId, new VolleyCallback() {
+                                        @Override
+                                        public void onSuccess(String stringResponse) {
+
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void changeUsername(String newUsername) {
         btnAddChange.setEnabled(false);
         UserState.INSTANCE.changeUsername(newUsername, new VolleyCallback() {
             @Override

@@ -34,12 +34,12 @@ public class SigninActivity extends AppCompatActivity {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            txtUsrname = findViewById(R.id.txtUsernameInputField);
-            txtPassword = findViewById(R.id.txtPasswordInputField);
-            txtPasswordRepeat = findViewById(R.id.txtPasswordConfirmationField);
-            btnConrfirm = findViewById(R.id.btnConfirm);
             return insets;
         });
+        txtUsrname = findViewById(R.id.txtUsernameInputField);
+        txtPassword = findViewById(R.id.txtPasswordInputField);
+        txtPasswordRepeat = findViewById(R.id.txtPasswordConfirmationField);
+        btnConrfirm = findViewById(R.id.btnConfirm);
     }
 
     public void onBtnConfirm_Clicked(View Caller) {
@@ -89,13 +89,13 @@ public class SigninActivity extends AppCompatActivity {
                                         int usrId = jsonArray.getJSONObject(0).getInt("iduser");
                                         editor.putInt("usrId", usrId);
                                         editor.apply();
+                                        Intent intent = new Intent(getBaseContext(), BaseActivity.class);
+                                        startActivity(intent);
                                     } catch (JSONException e) {
                                         throw new RuntimeException(e);
                                     }
                                 }
                             });
-                            Intent intent = new Intent(getBaseContext(), BaseActivity.class);
-                            startActivity(intent);
                             return;
                         }
                     });

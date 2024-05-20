@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.databinding.ActivityBaseBinding;
+import be.kuleuven.gt.hikinglog.fragments.AcceptFragment;
 import be.kuleuven.gt.hikinglog.fragments.ChatMessagesFragment;
 import be.kuleuven.gt.hikinglog.fragments.ChatsFragment;
 import be.kuleuven.gt.hikinglog.fragments.HomeFragment;
@@ -129,7 +130,16 @@ public class BaseActivity extends AppCompatActivity {
         return sharedPreferences.getInt("usrId", 1);
     }
 
-    public void changeToChat (int idprofile, String username) {
+    public void changeToChat (int idprofile, String username, boolean friends, boolean sender) {
+        if (friends){
+            changeToAcceptedChat(idprofile, username);
+        }
+        else {
+            changeToAcceptScreen(idprofile, username, sender);
+        }
+    }
+
+    public void changeToAcceptedChat(int idprofile, String username){
         ArrayList<MessageModel> messages = new ArrayList<>();
         UserState.INSTANCE.getMessagesPerPair(idprofile, new VolleyCallback() {
             @Override
@@ -157,5 +167,25 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void changeToAcceptScreen(int profileid, String username, boolean sender){
+        AcceptFragment fragment = new AcceptFragment();
+        Bundle args = new Bundle();
+        int senderInt = sender ? 1 : 0;
+        args.putInt("sender", senderInt);
+        args.putInt("profileId", profileid);
+        args.putString("username", username);
+        fragment.setArguments(args);
+        replaceFragment(fragment);
+    }
+
+    public void requestDeclined(){
+        ChatsFragment fragment = new ChatsFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setReorderingAllowed(true);
+        transaction.replace(R.id.fragContainer, fragment);
+        transaction.commit();
     }
 }

@@ -50,7 +50,8 @@ public class ChatsFragment extends Fragment implements ChatHeadClickedListener {
         UserState.INSTANCE.findFriends(new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
-                friends = getFriends(stringResponse);
+                friends = FriendModel.getFriendsFromJSON(stringResponse, usrId);
+                setListeners();
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -63,33 +64,11 @@ public class ChatsFragment extends Fragment implements ChatHeadClickedListener {
             }
         });
     }
-
-    public ArrayList<FriendModel> getFriends(String json) {
-        ArrayList<FriendModel> friends = new ArrayList<FriendModel>();
-        try {
-            JSONArray jsonArray = new JSONArray(json);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                int idFriend = jsonObject.getInt("iduserReceiver");
-                String usernameFriend = jsonObject.getString("r_username");
-                if (idFriend == usrId) {
-                    idFriend = jsonObject.getInt("iduserSender");
-                    usernameFriend = jsonObject.getString("s_username");
-                }
-                String date = jsonObject.getString("date");
-                FriendModel friend = (new FriendModel(idFriend, date, usernameFriend));
-                friend.setListener(this);
-                friends.add(friend);
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-        return friends;
-    }
-
     @Override
-    public void chatClicked(int idprofile, String username) {
-        ((BaseActivity)getActivity()).changeToChat(idprofile, username);
+    public void chatClicked(int idprofile, String username, boolean accepted, boolean sender) {
+        ((BaseActivity)getActivity()).changeToChat(idprofile, username, accepted, sender);
     }
-
+    public void setListeners(){
+        friends.forEach(friendModel -> friendModel.setListener(this));
+    }
 }

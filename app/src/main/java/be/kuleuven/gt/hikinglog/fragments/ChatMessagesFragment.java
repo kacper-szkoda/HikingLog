@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +20,9 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.adapter.ChatMessagesRecyclerViewAdapter;
 import be.kuleuven.gt.hikinglog.adapter.ChatWindowsRecyclerViewAdapter;
@@ -35,6 +39,7 @@ public class ChatMessagesFragment extends Fragment {
     int usrId;
     TextView txtInput;
     Button btnSend;
+    Timer myTimer;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -55,10 +60,12 @@ public class ChatMessagesFragment extends Fragment {
             }
         });
         this.setUpMessages(view);
+        this.schedulePolling(view);
         return view;
     }
 
     public void setUpMessages(View view){
+        refreshChat(view);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -76,13 +83,13 @@ public class ChatMessagesFragment extends Fragment {
             @Override
             public void onSuccess(String stringResponse) {
                 txtInput.setText("");
-                refreshChat(profileId, view);
+                refreshChat(view);
             }
         });
     }
-    public void refreshChat(int idprofile,  View view){
+    public void refreshChat( View view){
         ArrayList<MessageModel> messagesNew = new ArrayList<>();
-        UserState.INSTANCE.getMessagesPerPair(idprofile, new VolleyCallback() {
+        UserState.INSTANCE.getMessagesPerPair(profileId, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
                 try {
@@ -101,8 +108,16 @@ public class ChatMessagesFragment extends Fragment {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-
             }
         });
+    }
+    public void schedulePolling(View view){
+        myTimer = new Timer();
+        myTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                setUpMessages(view);
+            }
+        }, 5, 5000);
     }
 }

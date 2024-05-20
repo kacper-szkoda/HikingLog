@@ -60,7 +60,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         try {
             View view = inflater.inflate(R.layout.fragment_map, container, false);
             sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
@@ -74,12 +73,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             HomeFragment homeFragment = (HomeFragment) getParentFragment();
             mapState = homeFragment.getMapState();
             return view;
-
         } catch (Exception e) {
             Log.e(TAG, "onCreateView", e);
             throw e;
         }
-
     }
 
     @Override
@@ -117,10 +114,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
         try {
             if (locationPermissionGranted) {
                 if (locationPermissionGranted) {
@@ -188,8 +181,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private final Runnable RecordPath = new Runnable() {
         public void run() {
             Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size() - 2), coords.get(coords.size() - 1)));
-            //This method runs in the same thread as the UI.
-            //Do something to the UI thread here
         }
     };
 

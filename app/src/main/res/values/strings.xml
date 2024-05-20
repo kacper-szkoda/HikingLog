@@ -4,6 +4,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="maps_api_key">AIzaSyC0RRcgXMmHAl2heDBXMogWvy3FIHId7TM</string>
     <string name="btnStopValue">Stop</string>
+    <string name="txtRequestAccept">Stop</string>
+    <string name="txtRequestWait">Stop</string>
     <string name="btnStartValue">Start</string>
     <string name="searchHint">Search for users</string>
     <string name="title_activity_visiting_profile">VisitingProfileActivity</string>

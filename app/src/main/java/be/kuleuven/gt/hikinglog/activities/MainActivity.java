@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                                         Intent intent = new Intent(getBaseContext(), BaseActivity.class);
                                         startActivity(intent);
                                     } catch (JSONException e) {
-                                        throw new RuntimeException(e);
+                                        Toast.makeText(getBaseContext(),"Index out of range", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                 } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    Toast.makeText(getBaseContext(), "No array", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -27,8 +27,8 @@ public enum UserState {
 
     public void findByUsername(String usrname, VolleyCallback callback){
         String nameOfService = "findIDForUsername";
-        Map<String, String> params = SQLControl.paramBuilder(asList("usrname"), asList(usrname));
-        control.executePostRequest(nameOfService, params, callback);
+        String URL_extension = SQLControl.urlBuilder(nameOfService, usrname);
+        control.executeGetRequest(URL_extension, callback);
     }
     public void addNewUser(String usrname, String password, VolleyCallback callback){
         String nameOfService = "addUser";
@@ -77,9 +77,28 @@ public enum UserState {
         SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
     }
 
+    public void addFriend(int profileId, VolleyCallback callback) {
+        String nameOfService = "sendFriendRequest";
+        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        Map<String,String> params = SQLControl.paramBuilder(asList("iduser", "idprofile"), asList(String.valueOf(iduser), String.valueOf(profileId)));
+        SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
+    }
+    public void deleteRequest(int profileId, VolleyCallback callback){
+        String nameOfService = "deleteFriendRequest";
+        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        Map<String, String> params = SQLControl.paramBuilder(asList("idusersender", "iduserreceiver"), asList(String.valueOf(profileId), String.valueOf(iduser)));
+        SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
+    }
+    public void acceptFriend(int profileId, String date, VolleyCallback callback){
+        String nameOfService = "acceptFriend";
+        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        Map<String, String> params = SQLControl.paramBuilder(asList("date","idusrs", "idusrr"), asList(date, String.valueOf(profileId), String.valueOf(iduser)));
+        SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
+    }
     public void setUp(Context context){
         this.context = context;
     }
+
 
 
 }
