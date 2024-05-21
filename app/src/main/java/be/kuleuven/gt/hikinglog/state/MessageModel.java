@@ -17,6 +17,7 @@ public class MessageModel implements Serializable {
     public MessageModel(String text, String date, int sender, int receiver) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String today = format.format(new Date());
+
         if (today.equals((date.substring(0,10)))){
             this.date = date.substring(10,16);
         }

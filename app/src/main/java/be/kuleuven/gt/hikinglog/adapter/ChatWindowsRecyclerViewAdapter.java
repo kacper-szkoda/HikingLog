@@ -22,8 +22,10 @@ import be.kuleuven.gt.hikinglog.activities.BaseActivity;
 import be.kuleuven.gt.hikinglog.state.FriendModel;
 import be.kuleuven.gt.hikinglog.state.PathModel;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +52,18 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
 
     @Override
     public void onBindViewHolder(@NonNull ChatWindowsRecyclerViewAdapter.MyViewHolder holder, int position) {
+        String date = friends.get(position).getDateLastMessage();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String today = format.format(new Date());
+        String newDate = "";
+        if (!date.equals("null")) {
+            if (today.equals((date.substring(0,10)))){
+                newDate = date.substring(10,16);
+            }
+            else {
+                newDate = date.substring(0, 16);
+            }
+        }
         int profileId = friends.get(position).getIdprofile();
         String username = friends.get(position).getUsername();
         holder.setProfileId(profileId);
@@ -59,7 +73,7 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         holder.setContext(context);
         holder.setColor();
         holder.setFriend(friends.get(position));
-        holder.setLastMessage(friends.get(position).getLastMessage(), friends.get(position).getDateLastMessage());
+        holder.setLastMessage(friends.get(position).getLastMessage(), newDate);
         holder.returnCard().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
