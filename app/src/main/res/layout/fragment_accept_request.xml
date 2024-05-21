@@ -34,6 +34,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="200dp"
         android:text="TextView"
+        android:textSize="40dp"
+        android:layout_gravity="center_horizontal|center"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/btnDecline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

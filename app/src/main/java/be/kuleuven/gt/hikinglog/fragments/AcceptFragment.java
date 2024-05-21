@@ -55,6 +55,7 @@ public class AcceptFragment extends Fragment {
     }
 
     public void setUpReceiver(AcceptFragment fragment){
+        txtAcceptMessage.setText(R.string.txtRequestAccept);
         btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +88,7 @@ public class AcceptFragment extends Fragment {
             public void run() {
                 btnAccept.setEnabled(false);
                 btnDecline.setEnabled(false);
-                txtAcceptMessage.setText("Awaiting response");
+                txtAcceptMessage.setText(R.string.txtRequestWait);
                 btnAccept.setVisibility(View.INVISIBLE);
                 btnDecline.setVisibility(View.INVISIBLE);
             }

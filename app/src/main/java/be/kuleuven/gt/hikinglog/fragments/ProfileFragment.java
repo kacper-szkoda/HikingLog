@@ -180,7 +180,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setUpAddButton() {
-        UserState.INSTANCE.findFriends(new VolleyCallback() {
+        UserState.INSTANCE.findFriendsUsernamesLastMessages(new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
                 ArrayList<FriendModel> friendModels = new ArrayList<>();
