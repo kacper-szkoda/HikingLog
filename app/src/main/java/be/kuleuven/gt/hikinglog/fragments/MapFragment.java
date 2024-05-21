@@ -137,7 +137,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                                 gMap.getUiSettings().setMyLocationButtonEnabled(false);
                             }
                             if (getStarted()) {
-                                coords.add(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()));
+                                coords.add(new LatLng(lastKnownLocation.getLatitude(),
+                                        lastKnownLocation.getLongitude()));
                                 saveCoords();
                                 if (coords.size() > 1) {
                                     parent.runOnUiThread(RecordPath);
@@ -180,7 +181,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private final Runnable RecordPath = new Runnable() {
         public void run() {
-            Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size() - 2), coords.get(coords.size() - 1)));
+            Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size() - 2),
+                    coords.get(coords.size() - 1)));
         }
     };
 

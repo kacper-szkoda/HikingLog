@@ -95,10 +95,13 @@ public enum UserState {
         Map<String, String> params = SQLControl.paramBuilder(asList("date","idusrs", "idusrr"), asList(date, String.valueOf(profileId), String.valueOf(iduser)));
         SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
     }
+    public void findFriendsUsernamesLastMessages(VolleyCallback callback){
+        String nameOfService = "findFriendsUsernamesLastMessages";
+        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
+        String URLExtension = SQLControl.urlBuilder(nameOfService, iduser, iduser);
+        SQLControl.INSTANCE.executeGetRequest(URLExtension, callback);
+    }
     public void setUp(Context context){
         this.context = context;
     }
-
-
-
 }

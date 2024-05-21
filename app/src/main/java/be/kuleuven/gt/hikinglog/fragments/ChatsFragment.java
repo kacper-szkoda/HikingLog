@@ -47,7 +47,7 @@ public class ChatsFragment extends Fragment implements ChatHeadClickedListener {
     }
 
     public void setUpChatHeads() {
-        UserState.INSTANCE.findFriends(new VolleyCallback() {
+        UserState.INSTANCE.findFriendsUsernamesLastMessages(new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
                 friends = FriendModel.getFriendsFromJSON(stringResponse, usrId);

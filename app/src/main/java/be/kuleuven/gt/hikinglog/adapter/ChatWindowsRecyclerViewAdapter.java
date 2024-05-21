@@ -59,6 +59,7 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         holder.setContext(context);
         holder.setColor();
         holder.setFriend(friends.get(position));
+        holder.setLastMessage(friends.get(position).getLastMessage(), friends.get(position).getDateLastMessage());
         holder.returnCard().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,13 +78,15 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         String username;
         int profileId;
         boolean accepted;
-        TextView txtFriendUsername;
+        TextView txtFriendUsername, txtHeadMessage, txtHeadTime;
         Context context;
         FriendModel friend;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             cardViewChat = itemView.findViewById(R.id.cardViewChat);
             txtFriendUsername = itemView.findViewById(R.id.txtFriendUsername);
+            txtHeadTime = itemView.findViewById(R.id.txtHeadTime);
+            txtHeadMessage = itemView.findViewById(R.id.txtHeadMessage);
         }
 
         public void setUsername(String username) {
@@ -120,5 +123,22 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         }
         public void setFriend (FriendModel friend){this.friend = friend;}
         public FriendModel getFriend(){return friend;}
+
+        public void setLastMessage(String message, String time) {
+            Handler handler = new Handler(context.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (accepted) {
+                        txtHeadMessage.setText(message);
+                        txtHeadTime.setText(time);
+                    }
+                    else {
+                        txtHeadMessage.setText("Awaiting acceptance");
+                        txtHeadTime.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+        }
     }
 }

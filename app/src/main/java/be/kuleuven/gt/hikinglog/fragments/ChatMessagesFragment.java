@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,16 +18,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.adapter.ChatMessagesRecyclerViewAdapter;
-import be.kuleuven.gt.hikinglog.adapter.ChatWindowsRecyclerViewAdapter;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
-import be.kuleuven.gt.hikinglog.state.FriendModel;
 import be.kuleuven.gt.hikinglog.state.MessageModel;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
@@ -40,6 +37,7 @@ public class ChatMessagesFragment extends Fragment {
     TextView txtInput;
     Button btnSend;
     Timer myTimer;
+    boolean canRefresh;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -53,30 +51,46 @@ public class ChatMessagesFragment extends Fragment {
         txtFriendName.setText(username);
         btnSend = view.findViewById(R.id.btnSend);
         txtInput = view.findViewById(R.id.txtInputMessage);
+        canRefresh = true;
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage(view);
             }
         });
-        this.setUpMessages(view);
+        this.refreshChat(view);
         this.schedulePolling(view);
         return view;
     }
 
     public void setUpMessages(View view){
-        refreshChat(view);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                RecyclerView recyclerView = view.findViewById(R.id.recyclerMessages);
-                ChatMessagesRecyclerViewAdapter adapter = new ChatMessagesRecyclerViewAdapter(getContext(), messages);
-                recyclerView.setAdapter(adapter);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                layoutManager.setStackFromEnd(true);
-                recyclerView.setLayoutManager(layoutManager);
+            try {
+                requireActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RecyclerView recyclerView = view.findViewById(R.id.recyclerMessages);
+                        ChatMessagesRecyclerViewAdapter adapter = new ChatMessagesRecyclerViewAdapter(getContext(), messages);
+                        recyclerView.setAdapter(adapter);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                        layoutManager.setStackFromEnd(true);
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                            @Override
+                            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                                super.onScrolled(recyclerView, dx, dy);
+                                int currentLastVisible = layoutManager.findLastVisibleItemPosition();
+                                if (!(currentLastVisible == messages.size() - 1)){
+                                    canRefresh = false;
+                                }
+                                else {
+                                    canRefresh = true;
+                                }
+                            }
+                        });
+                    }
+                });
+            } catch (IllegalStateException ignored) {
             }
-        });
     }
     public void sendMessage(View view){
         UserState.INSTANCE.sendMessage(txtInput.getText().toString(), profileId, new VolleyCallback() {
@@ -116,8 +130,10 @@ public class ChatMessagesFragment extends Fragment {
         myTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                setUpMessages(view);
+                if (canRefresh){
+                    refreshChat(view);
+                }
             }
-        }, 5, 5000);
+        }, 50000, 50000);
     }
 }

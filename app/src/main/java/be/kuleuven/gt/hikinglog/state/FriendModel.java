@@ -13,15 +13,21 @@ public class FriendModel {
     int idprofile;
     String username;
     String dateAccepted;
-    String lastMessage;
     boolean accepted;
     boolean sender;
     ChatHeadClickedListener listener;
-    public FriendModel(int idprofile, String dateAccepted, String username, boolean sender) {
+    String lastMessage;
+    String dateLastMessage;
+    public FriendModel(int idprofile, String dateAccepted, String username, boolean sender, String lastMessage, String dateLastMessage) {
         this.idprofile = idprofile;
         this.username = username;
         this.dateAccepted = dateAccepted;
         this.sender = sender;
+        this.lastMessage = lastMessage;
+        this.dateLastMessage = dateLastMessage;
+        if (!dateLastMessage.equals("null")){
+            dateLastMessage = dateLastMessage.substring(0, 16);
+        }
         if (dateAccepted.equals("null")){
             accepted = false;
         }
@@ -40,6 +46,9 @@ public class FriendModel {
     }
     public String getLastMessage() {
         return lastMessage;
+    }
+    public String getDateLastMessage(){
+        return dateLastMessage;
     }
     public void setIdprofile(int idprofile) {
         this.idprofile = idprofile;
@@ -67,6 +76,8 @@ public class FriendModel {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 int idFriend = jsonObject.getInt("iduserReceiver");
                 String usernameFriend = jsonObject.getString("r_username");
+                String lastMessage = jsonObject.getString("c_message");
+                String lastMessageDate = jsonObject.getString("c_time");
                 boolean sender = false;
                 if (idFriend == usrId) {
                     sender = true;
@@ -74,7 +85,7 @@ public class FriendModel {
                     usernameFriend = jsonObject.getString("s_username");
                 }
                 String date = jsonObject.getString("date");
-                FriendModel friend = (new FriendModel(idFriend, date, usernameFriend, sender));
+                FriendModel friend = (new FriendModel(idFriend, date, usernameFriend, sender,lastMessage, lastMessageDate ));
                 friends.add(friend);
             }
         } catch (JSONException e) {
