@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -146,6 +147,7 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
                     if (accepted) {
                         txtHeadMessage.setText(message);
                         txtHeadTime.setText(time);
+                        txtFriendUsername.setTextColor(Color.parseColor("#780000"));
                     }
                     else {
                         txtHeadMessage.setText("Awaiting acceptance");

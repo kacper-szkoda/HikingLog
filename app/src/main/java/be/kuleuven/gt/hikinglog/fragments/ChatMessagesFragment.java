@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -35,7 +35,7 @@ public class ChatMessagesFragment extends Fragment {
     ArrayList<MessageModel> messages;
     int usrId;
     TextView txtInput;
-    Button btnSend;
+    TextView btnSend;
     Timer myTimer;
     boolean canRefresh;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +49,7 @@ public class ChatMessagesFragment extends Fragment {
         profileId = getArguments().getInt("profileId");
         TextView txtFriendName = view.findViewById(R.id.txtChatUser);
         txtFriendName.setText(username);
-        btnSend = view.findViewById(R.id.btnSend);
+        btnSend = view.findViewById(R.id.txtSend);
         txtInput = view.findViewById(R.id.txtInputMessage);
         canRefresh = true;
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -93,13 +93,18 @@ public class ChatMessagesFragment extends Fragment {
             }
     }
     public void sendMessage(View view){
-        UserState.INSTANCE.sendMessage(txtInput.getText().toString(), profileId, new VolleyCallback() {
-            @Override
-            public void onSuccess(String stringResponse) {
-                txtInput.setText("");
-                refreshChat(view);
-            }
-        });
+        if (txtInput.getText().toString().isEmpty()){
+            Toast.makeText(getActivity().getBaseContext(), "Do not send and empty message", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            UserState.INSTANCE.sendMessage(txtInput.getText().toString(), profileId, new VolleyCallback() {
+                @Override
+                public void onSuccess(String stringResponse) {
+                    txtInput.setText("");
+                    refreshChat(view);
+                }
+            });
+        }
     }
     public void refreshChat( View view){
         ArrayList<MessageModel> messagesNew = new ArrayList<>();

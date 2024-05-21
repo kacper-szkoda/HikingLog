@@ -34,6 +34,7 @@
             android:layout_marginStart="40dp"
             android:fontFamily="@font/baloo_da"
             android:text="Username"
+            android:textColor="@color/textImportant"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
