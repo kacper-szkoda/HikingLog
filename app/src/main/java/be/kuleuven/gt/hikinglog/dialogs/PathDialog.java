@@ -3,10 +3,14 @@ package be.kuleuven.gt.hikinglog.dialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,7 +18,11 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 
 import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.activities.BaseActivity;
 import be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment;
+import be.kuleuven.gt.hikinglog.fragments.ProfileFragment;
+import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
+import be.kuleuven.gt.hikinglog.state.MapState;
 
 public class PathDialog extends Dialog {
     private PathDisplayFragment pathDisplayFragment;
@@ -22,11 +30,14 @@ public class PathDialog extends Dialog {
     private String pathName;
     private int profileId;
     PathDialog dialog;
-    public PathDialog(@NonNull Context context, String pathName, int profileId) {
+    Button btnDelete;
+    BaseActivity father;
+    public PathDialog(@NonNull Context context, String pathName, int profileId, BaseActivity father) {
         super(context);
         this.profileId = profileId;
         this.pathName = pathName;
         dialog = this;
+        this.father = father;
     }
 
     @Override
@@ -36,7 +47,9 @@ public class PathDialog extends Dialog {
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         fcv = (FragmentContainerView) dialog.findViewById(R.id.fragmentContainerView);
         pathDisplayFragment = (PathDisplayFragment) fcv.getFragment();
+        btnDelete = dialog.findViewById(R.id.btnDeleteFromDialog);
         setUpDialog(pathName, profileId);
+        setUpListeners();
     }
     public void setUpDialog(String pathName, int profileId){
         pathDisplayFragment.setPathName(pathName);
@@ -53,5 +66,30 @@ public class PathDialog extends Dialog {
         });
         TextView txt = this.findViewById(R.id.txtPathnameProfile);
         txt.setText(pathName);
+    }
+    public void setUpListeners(){
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        int usrId = sharedPreferences.getInt("usrId", 1);
+        if (!(profileId == usrId)){
+            btnDelete.setVisibility(View.INVISIBLE);
+            btnDelete.setEnabled(false);
+        }
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapState.INSTANCE.deleteEntirePathFromDialog(pathName, new VolleyCallback() {
+                    @Override
+                    public void onSuccess(String stringResponse) {
+                        resetProfile();
+                    }
+                });
+            }
+        });
+    }
+
+    private void resetProfile() {
+        dialog.dismiss();
+        father.goToProfile();
+//        father.setUpPathModels();
     }
 }

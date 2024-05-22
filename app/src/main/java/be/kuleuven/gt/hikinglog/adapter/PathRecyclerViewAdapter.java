@@ -14,7 +14,9 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import be.kuleuven.gt.hikinglog.activities.BaseActivity;
 import be.kuleuven.gt.hikinglog.dialogs.PathDialog;
+import be.kuleuven.gt.hikinglog.fragments.ProfileFragment;
 import be.kuleuven.gt.hikinglog.state.PathModel;
 import java.util.ArrayList;
 
@@ -25,11 +27,13 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
     Context context;
     ArrayList<PathModel> pathModels;
     int profileId;
+    BaseActivity father;
 
-    public PathRecyclerViewAdapter(Context context, ArrayList<PathModel> pathModels, int profileId) {
+    public PathRecyclerViewAdapter(Context context, ArrayList<PathModel> pathModels, int profileId, BaseActivity father) {
         this.context = context;
         this.pathModels = pathModels;
         this.profileId = profileId;
+        this.father = father;
     }
 
     @NonNull
@@ -45,6 +49,7 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         holder.pathNameTxt.setText(pathModels.get(position).getPathName());
         holder.setPathName(pathModels.get(position).getPathName());
         holder.setProfileId(profileId);
+        holder.setFather(father);
     }
 
     @Override
@@ -58,6 +63,7 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         Button btnView;
         String pathName;
         int profileId;
+        BaseActivity father;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,7 +79,7 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         }
 
         public void displayMapDialog() {
-            dialogPath = new PathDialog(itemView.getContext(), pathName, profileId);
+            dialogPath = new PathDialog(itemView.getContext(), pathName, profileId, father);
             dialogPath.show();
             this.getAdapterPosition();
         }
@@ -82,5 +88,8 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
             this.pathName = pathName;
         }
         public void setProfileId(int profileId){this.profileId = profileId;}
+        public void setFather(BaseActivity father){
+            this.father = father;
+        }
     }
 }

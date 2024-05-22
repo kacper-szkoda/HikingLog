@@ -53,14 +53,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private ArrayList<LatLng> coords;
     private FragmentActivity parent;
     private Timer myTimer;
-    private MapState mapState;
     SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        try {
             View view = inflater.inflate(R.layout.fragment_map, container, false);
             sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
             SupportMapFragment mapFragment = (SupportMapFragment)
@@ -70,13 +68,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             coords = new ArrayList<LatLng>();
             parent = this.getActivity();
             setStarted(false);
-            HomeFragment homeFragment = (HomeFragment) getParentFragment();
-            mapState = homeFragment.getMapState();
             return view;
-        } catch (Exception e) {
-            Log.e(TAG, "onCreateView", e);
-            throw e;
-        }
     }
 
     @Override
@@ -207,7 +199,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void saveCoords() {
-        mapState.postMap(coords.get(coords.size() - 1), new VolleyCallback() {
+        MapState.INSTANCE.postMap(coords.get(coords.size() - 1), new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
 
@@ -216,13 +208,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void savePath(String pathname) {
-        mapState.savePath(pathname, new VolleyCallback() {
+        MapState.INSTANCE.savePath(pathname, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
 
             }
         });
-        mapState.renamePath(pathname, new VolleyCallback() {
+        MapState.INSTANCE.renamePath(pathname, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
 

@@ -23,7 +23,7 @@ import be.kuleuven.gt.hikinglog.state.MapState;
 
 public class HomeFragment extends Fragment {
     MapFragment mapFragment;
-    Button startBtn, dialogBtnSave, dialogBtnDelete;
+    Button startBtn;
     Dialog dialogSave;
     SharedPreferences sharedPref;
     MapState mapState;
@@ -38,8 +38,6 @@ public class HomeFragment extends Fragment {
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("started", 0);
         editor.apply();
-//            EdgeToEdge.enable(this);
-//            setContentView(R.layout.activity_base);
 
         BaseActivity mapsScreen = (BaseActivity) getActivity();
         mapState = mapsScreen.returnMapState();
@@ -81,56 +79,13 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-
         dialogSave = new SavePathDialog(requireActivity(), mapFragment);
 
-//        dialogSave = new Dialog(this.getContext());
-//
-//        dialogSave.setContentView(R.layout.confirm_path_dialog);
-//        dialogSave.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        dialogSave.setCancelable(false);
-//
-//        dialogBtnSave = dialogSave.findViewById(R.id.btnDialogSave);
-//        dialogBtnDelete = dialogSave.findViewById(R.id.btnDialogDelete);
-//
-//        dialogBtnDelete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mapFragment.onStopBtn();
-//                mapState.deletePath(new VolleyCallback() {
-//                    @Override
-//                    public void onSuccess(String stringResponse) {
-//
-//                    }
-//                });
-//                mapState.deletePathEntries(new VolleyCallback() {
-//                    @Override
-//                    public void onSuccess(String stringResponse) {
-//
-//                    }
-//                });
-//                dialogSave.dismiss();
-//            }
-//        });
-//        dialogBtnSave.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                TextView textView = dialogSave.findViewById(R.id.inputPathname);
-//                mapFragment.onStopBtn();
-//                mapFragment.saveCoords();
-//                mapFragment.savePath(textView.getText().toString());
-//                dialogSave.dismiss();
-//            }
-//        });
         return view;
     }
 
     public boolean getStarted() {
         sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
         return sharedPref.getInt("started", 0) != 0;
-    }
-
-    public MapState getMapState() {
-        return mapState;
     }
 }

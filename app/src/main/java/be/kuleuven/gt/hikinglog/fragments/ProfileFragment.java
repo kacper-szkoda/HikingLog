@@ -92,7 +92,6 @@ public class ProfileFragment extends Fragment {
     }
 
     public void setUpPathModels() {
-        //TODO implement buttons on the dialogs, refactor the dialog to be generic for the accepts and cancels below
         MapState.INSTANCE.getPathsPerUser(profileId, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
@@ -111,10 +110,15 @@ public class ProfileFragment extends Fragment {
                         throw new RuntimeException(e);
                     }
                 }
-                RecyclerView recyclerView = baseActivity.findViewById(R.id.recyclerPaths);
-                PathRecyclerViewAdapter adapter = new PathRecyclerViewAdapter(baseActivity, usrPaths, profileId);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(baseActivity));
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RecyclerView recyclerView = baseActivity.findViewById(R.id.recyclerPaths);
+                        PathRecyclerViewAdapter adapter = new PathRecyclerViewAdapter(baseActivity, usrPaths, profileId, baseActivity );
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(baseActivity));
+                    }
+                });
             }
         });
     }

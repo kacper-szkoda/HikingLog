@@ -10,23 +10,30 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import be.kuleuven.gt.hikinglog.R;
+import be.kuleuven.gt.hikinglog.helpers.LastMessageVisibleListener;
 import be.kuleuven.gt.hikinglog.state.MessageModel;
 
 public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMessagesRecyclerViewAdapter.MyViewHolder> {
     Context context;
     ArrayList<MessageModel> messagesDisplayed;
     int usrId;
+    LastMessageVisibleListener listener;
+    LinearLayoutManager layoutManager;
 
-    public ChatMessagesRecyclerViewAdapter(Context context, ArrayList<MessageModel> messages) {
+    public ChatMessagesRecyclerViewAdapter(Context context, ArrayList<MessageModel> messages,
+                                           LastMessageVisibleListener father, LinearLayoutManager layoutManager) {
         this.context = context;
         this.messagesDisplayed = messages;
         SharedPreferences sharedPreferences = context.getSharedPreferences("user",Context.MODE_PRIVATE);
         usrId = sharedPreferences.getInt("usrId", 1);
+        this.listener = father;
+        this.layoutManager = layoutManager;
     }
 
     @NonNull
@@ -55,7 +62,22 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
         MessageModel message = messagesDisplayed.get(position);
         holder.getDate().setText(message.getDate());
         holder.getMessage().setText(message.getText());
+        holder.setPosition(position);
+        if (position == messagesDisplayed.size()-1){
+            listener.scrolledPast(false);
+        }
+//        int lastMessage = layoutManager.findLastCompletelyVisibleItemPosition();
     }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull MyViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder.getLayoutPosition() == messagesDisplayed.size()-1)
+        {
+            listener.scrolledPast(true);
+        }
+    }
+
     @Override
     public int getItemCount() {
         return messagesDisplayed.size();
@@ -65,6 +87,7 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
         TextView message;
         TextView date;
         ConstraintLayout outsideConstraint, insideConstraint;
+        private int position;
 
         public TextView getMessage() {
             return message;
@@ -80,6 +103,12 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
             date = itemView.findViewById(R.id.txtDate);
             outsideConstraint = itemView.findViewById(R.id.constraintOutside);
             insideConstraint = itemView.findViewById(R.id.constraintInside);
+        }
+        public void setPosition(int position){
+            this.position = position;
+        }
+        public int getPositionList(){
+            return position;
         }
     }
 }

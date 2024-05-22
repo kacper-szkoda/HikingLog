@@ -24,12 +24,13 @@ import java.util.TimerTask;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.adapter.ChatMessagesRecyclerViewAdapter;
+import be.kuleuven.gt.hikinglog.helpers.LastMessageVisibleListener;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.MessageModel;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
 
-public class ChatMessagesFragment extends Fragment {
+public class ChatMessagesFragment extends Fragment implements LastMessageVisibleListener {
     int profileId;
     String username;
     ArrayList<MessageModel> messages;
@@ -64,29 +65,29 @@ public class ChatMessagesFragment extends Fragment {
     }
 
     public void setUpMessages(View view){
+        ChatMessagesFragment father = this;
             try {
                 requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         RecyclerView recyclerView = view.findViewById(R.id.recyclerMessages);
-                        ChatMessagesRecyclerViewAdapter adapter = new ChatMessagesRecyclerViewAdapter(getContext(), messages);
-                        recyclerView.setAdapter(adapter);
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                        ChatMessagesRecyclerViewAdapter adapter = new ChatMessagesRecyclerViewAdapter(getContext(), messages, father, layoutManager);
+                        recyclerView.setAdapter(adapter);
                         layoutManager.setStackFromEnd(true);
                         recyclerView.setLayoutManager(layoutManager);
-                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                            @Override
-                            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                                super.onScrolled(recyclerView, dx, dy);
-                                int currentLastVisible = layoutManager.findLastVisibleItemPosition();
-                                if (!(currentLastVisible == messages.size() - 1)){
-                                    canRefresh = false;
-                                }
-                                else {
-                                    canRefresh = true;
-                                }
-                            }
-                        });
+
+//                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//                            @Override
+//                            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//                                super.onScrollStateChanged(recyclerView, newState);
+//                                int currentLastVisible = layoutManager.findLastVisibleItemPosition();
+//                                if (currentLastVisible == -1){
+//                                    canRefresh = true;
+//                                }
+//                                else canRefresh = currentLastVisible == messages.size() - 1;
+//                            }
+//                        });
                     }
                 });
             } catch (IllegalStateException ignored) {
@@ -139,6 +140,11 @@ public class ChatMessagesFragment extends Fragment {
                     refreshChat(view);
                 }
             }
-        }, 50000, 50000);
+        }, 3000, 3000);
+    }
+
+    @Override
+    public void scrolledPast(boolean scrolledPast) {
+        this.canRefresh = !scrolledPast;
     }
 }

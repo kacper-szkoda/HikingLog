@@ -53,12 +53,7 @@ public class BaseActivity extends AppCompatActivity {
             if (item.getItemId() == R.id.home)
                 replaceFragment(new HomeFragment());
             else if (item.getItemId() == R.id.profile) {
-                SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
-                ProfileFragment fragment = new ProfileFragment();
-                Bundle args = new Bundle();
-                args.putInt("profileId", sharedPreferences.getInt("usrId", 1));
-                fragment.setArguments(args);
-                replaceFragment(fragment);
+                goToProfile();
             }
             else if (item.getItemId() == R.id.chat)
                 replaceFragment(new ChatsFragment());
@@ -74,6 +69,15 @@ public class BaseActivity extends AppCompatActivity {
             String query = intent.getStringExtra(SearchManager.QUERY);
             search(query);
         }
+    }
+
+    public void goToProfile() {
+        SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
+        ProfileFragment fragment = new ProfileFragment();
+        Bundle args = new Bundle();
+        args.putInt("profileId", sharedPreferences.getInt("usrId", 1));
+        fragment.setArguments(args);
+        replaceFragment(fragment);
     }
 
     @Override
