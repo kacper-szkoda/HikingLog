@@ -17,6 +17,7 @@ import org.json.JSONException;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.activities.BaseActivity;
+import be.kuleuven.gt.hikinglog.dialogs.SavePathDialog;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.MapState;
 
@@ -81,51 +82,46 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        dialogSave = new Dialog(this.getContext());
-        dialogSave.setContentView(R.layout.confirm_path_dialog);
-        dialogSave.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialogSave.setCancelable(false);
+        dialogSave = new SavePathDialog(requireActivity(), mapFragment);
 
-        dialogBtnSave = dialogSave.findViewById(R.id.btnDialogSave);
-        dialogBtnDelete = dialogSave.findViewById(R.id.btnDialogDelete);
-
-        dialogBtnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mapFragment.onStopBtn();
-                mapState.deletePath(new VolleyCallback() {
-                    @Override
-                    public void onSuccess(String stringResponse) {
-
-                    }
-                });
-                mapState.deletePathEntries(new VolleyCallback() {
-                    @Override
-                    public void onSuccess(String stringResponse) {
-
-                    }
-                });
-                dialogSave.dismiss();
-            }
-        });
-        dialogBtnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextView textView = dialogSave.findViewById(R.id.inputPathname);
-                mapFragment.onStopBtn();
-                mapFragment.saveCoords();
-                mapFragment.savePath(textView.getText().toString());
-                dialogSave.dismiss();
-//                    Toast.makeText(HomeFragment.getPare.this, "Path saved", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-//            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//                return insets;
-//            });
-
+//        dialogSave = new Dialog(this.getContext());
+//
+//        dialogSave.setContentView(R.layout.confirm_path_dialog);
+//        dialogSave.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        dialogSave.setCancelable(false);
+//
+//        dialogBtnSave = dialogSave.findViewById(R.id.btnDialogSave);
+//        dialogBtnDelete = dialogSave.findViewById(R.id.btnDialogDelete);
+//
+//        dialogBtnDelete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mapFragment.onStopBtn();
+//                mapState.deletePath(new VolleyCallback() {
+//                    @Override
+//                    public void onSuccess(String stringResponse) {
+//
+//                    }
+//                });
+//                mapState.deletePathEntries(new VolleyCallback() {
+//                    @Override
+//                    public void onSuccess(String stringResponse) {
+//
+//                    }
+//                });
+//                dialogSave.dismiss();
+//            }
+//        });
+//        dialogBtnSave.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                TextView textView = dialogSave.findViewById(R.id.inputPathname);
+//                mapFragment.onStopBtn();
+//                mapFragment.saveCoords();
+//                mapFragment.savePath(textView.getText().toString());
+//                dialogSave.dismiss();
+//            }
+//        });
         return view;
     }
 
