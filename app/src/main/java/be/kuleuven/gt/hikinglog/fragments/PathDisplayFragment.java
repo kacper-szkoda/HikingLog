@@ -84,7 +84,6 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
                         throw new RuntimeException(e);
                     }
                 }
-
                 gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                         new LatLng(coords.get(coords.size() - 1).latitude, coords.get(coords.size() - 1).longitude), 15));
             }

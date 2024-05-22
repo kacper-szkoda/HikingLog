@@ -40,6 +40,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.Theme_HikingLog);
         EdgeToEdge.enable(this);
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -132,14 +133,14 @@ public class BaseActivity extends AppCompatActivity {
 
     public void changeToChat (int idprofile, String username, boolean friends, boolean sender) {
         if (friends){
-            changeToAcceptedChat(idprofile, username);
+            changeToAcceptedChat(idprofile, username, false);
         }
         else {
             changeToAcceptScreen(idprofile, username, sender);
         }
     }
 
-    public void changeToAcceptedChat(int idprofile, String username){
+    public void changeToAcceptedChat(int idprofile, String username, boolean fromAccept){
         ArrayList<MessageModel> messages = new ArrayList<>();
         UserState.INSTANCE.getMessagesPerPair(idprofile, new VolleyCallback() {
             @Override
@@ -161,7 +162,17 @@ public class BaseActivity extends AppCompatActivity {
                     args.putInt("profileId", idprofile);
                     ChatMessagesFragment fragment = new ChatMessagesFragment();
                     fragment.setArguments(args);
-                    replaceFragment(fragment);
+                    if (fromAccept){
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction transaction = fragmentManager.beginTransaction();
+                        transaction.setReorderingAllowed(true);
+                        transaction.replace(R.id.fragContainer, fragment);
+                        transaction.commit();
+                    }
+                    else {
+                        replaceFragment(fragment);
+                    }
+
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

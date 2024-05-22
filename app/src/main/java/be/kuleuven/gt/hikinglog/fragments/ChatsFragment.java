@@ -3,6 +3,7 @@ package be.kuleuven.gt.hikinglog.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,15 +53,23 @@ public class ChatsFragment extends Fragment implements ChatHeadClickedListener {
             public void onSuccess(String stringResponse) {
                 friends = FriendModel.getFriendsFromJSON(stringResponse, usrId);
                 setListeners();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        RecyclerView recyclerView = getView().findViewById(R.id.recyclerFriends);
-                        ChatWindowsRecyclerViewAdapter adapter = new ChatWindowsRecyclerViewAdapter(getContext(), friends);
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    }
-                });
+                try {
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                RecyclerView recyclerView = requireView().findViewById(R.id.recyclerFriends);
+                                ChatWindowsRecyclerViewAdapter adapter = new ChatWindowsRecyclerViewAdapter(getContext(), friends);
+                                recyclerView.setAdapter(adapter);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                            } catch (IllegalStateException e) {
+                                Log.w("ERROR", "exception", e);
+                            }
+                        }
+                    });
+                } catch (IllegalStateException e) {
+                    Log.w("ERROR", "exception", e);
+                }
             }
         });
     }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="textImportant">#780000</color>
+    <color name="colorBackground">#eae2b7</color>
+    <color name="colorBackgroundTrans">#FFeae2b7</color>
     <color name="colorPrimary">#fcbf49</color>
     <color name="darkerBackground">#f2cc8f</color>
     <color name="colorSecondaryVariant">#d62828</color>

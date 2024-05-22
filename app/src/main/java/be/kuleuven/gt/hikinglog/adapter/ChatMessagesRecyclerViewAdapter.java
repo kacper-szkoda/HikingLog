@@ -31,41 +31,30 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
 
     @NonNull
     @Override
-    public ChatMessagesRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_view_row_message, parent, false);
-        return new ChatMessagesRecyclerViewAdapter.MyViewHolder(view);
+        View view;
+        switch (viewType) {
+            case 1: view = inflater.inflate(R.layout.recycler_view_row_message_yours,parent, false);
+            break;
+            case 0: view = inflater.inflate(R.layout.recycler_view_row_message_to_you, parent, false);
+            break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + viewType);
+        }
+        return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatMessagesRecyclerViewAdapter.MyViewHolder holder, int position) {
+    public int getItemViewType(int position) {
+        return (messagesDisplayed.get(position).getSender() == usrId) ? 1 : 0;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         MessageModel message = messagesDisplayed.get(position);
         holder.getDate().setText(message.getDate());
         holder.getMessage().setText(message.getText());
-        ConstraintLayout constraintOutside = holder.getOutsideConstraint();
-        ConstraintLayout constraintInside = holder.getInsideConstraint();
-        ConstraintSet constraintSetOutside = new ConstraintSet();
-        constraintSetOutside.clone(constraintOutside);
-        ConstraintSet constraintSetInside = new ConstraintSet();
-        constraintSetInside.clone(constraintInside);
-        if (message.getSender() == usrId){
-            constraintSetOutside.connect(R.id.constraintInside, ConstraintSet.RIGHT,
-                    R.id.constraintOutside, ConstraintSet.RIGHT,8);
-            constraintSetInside.connect(R.id.txtDate, ConstraintSet.RIGHT,
-                    R.id.constraintInside, ConstraintSet.RIGHT, 8);
-            constraintSetInside.connect(R.id.cardViewMessage, ConstraintSet.RIGHT,
-                    R.id.constraintInside, ConstraintSet.RIGHT, 8);
-        }
-        else {
-            constraintSetOutside.connect(R.id.constraintInside, ConstraintSet.LEFT,
-                    R.id.constraintOutside, ConstraintSet.LEFT,8);
-            constraintSetInside.connect(R.id.txtDate, ConstraintSet.LEFT,
-                    R.id.constraintInside, ConstraintSet.LEFT, 8);
-            constraintSetInside.connect(R.id.cardViewMessage, ConstraintSet.LEFT,
-                    R.id.constraintInside, ConstraintSet.LEFT, 8);
-        }
-        constraintSetOutside.applyTo(constraintOutside);
-        constraintSetInside.applyTo(constraintInside);
     }
     @Override
     public int getItemCount() {
@@ -83,14 +72,6 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
 
         public TextView getDate() {
             return date;
-        }
-
-        public ConstraintLayout getOutsideConstraint() {
-            return outsideConstraint;
-        }
-
-        public ConstraintLayout getInsideConstraint() {
-            return insideConstraint;
         }
 
         public MyViewHolder(@NonNull View itemView) {

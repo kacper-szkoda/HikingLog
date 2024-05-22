@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    app:cardElevation="10dp"
-    android:layout_height="wrap_content">
-<!--    app:cardBackgroundColor="@android:color/transparent"-->
+    android:layout_height="237dp"
+    app:cardBackgroundColor="@color/colorBackground"
+    app:cardElevation="10dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="237dp">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/txtDialogSave"
@@ -18,27 +18,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:text="Save path"
-            android:textColor="@color/black"
+            android:textColor="@color/textImportant"
             android:textSize="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout2"
+        <EditText
+            android:id="@+id/inputPathname"
             android:layout_width="336dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtDialogSave">
+            app:layout_constraintTop_toBottomOf="@+id/txtDialogSave" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputPathname"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Input text" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -47,7 +42,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+            app:layout_constraintTop_toBottomOf="@+id/inputPathname">
 
             <Button
                 android:id="@+id/btnDialogDelete"
@@ -68,6 +63,8 @@
                 android:layout_weight="1"
                 android:text="Save" />
         </LinearLayout>
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

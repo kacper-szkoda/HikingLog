@@ -7,6 +7,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
 
     @Override
     public void onBindViewHolder(@NonNull ChatWindowsRecyclerViewAdapter.MyViewHolder holder, int position) {
+        holder.setContext(context);
         String date = friends.get(position).getDateLastMessage();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String today = format.format(new Date());
@@ -65,16 +67,22 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
                 newDate = date.substring(0, 16);
             }
         }
+        String lastMessage = friends.get(position).getLastMessage();
+        if (lastMessage.equals("null"))
+        {
+            holder.setLastMessage("", newDate);
+        }
+        else {
+            holder.setLastMessage(friends.get(position).getLastMessage(), newDate);
+        }
         int profileId = friends.get(position).getIdprofile();
         String username = friends.get(position).getUsername();
         holder.setProfileId(profileId);
         holder.setUsername(username);
         holder.returnTextViewFriend().setText(username);
         holder.setAccepted(friends.get(position).getAccepted());
-        holder.setContext(context);
         holder.setColor();
         holder.setFriend(friends.get(position));
-        holder.setLastMessage(friends.get(position).getLastMessage(), newDate);
         holder.returnCard().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,14 +148,13 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         public FriendModel getFriend(){return friend;}
 
         public void setLastMessage(String message, String time) {
-            Handler handler = new Handler(context.getMainLooper());
+            Handler handler = new Handler(Looper.getMainLooper());
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     if (accepted) {
                         txtHeadMessage.setText(message);
                         txtHeadTime.setText(time);
-                        txtFriendUsername.setTextColor(Color.parseColor("#780000"));
                     }
                     else {
                         txtHeadMessage.setText("Awaiting acceptance");

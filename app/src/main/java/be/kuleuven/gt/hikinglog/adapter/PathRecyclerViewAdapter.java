@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+
+import be.kuleuven.gt.hikinglog.dialogs.PathDialog;
 import be.kuleuven.gt.hikinglog.state.PathModel;
 import java.util.ArrayList;
 
@@ -51,7 +53,7 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        private Dialog dialogPath;
+        private PathDialog dialogPath;
         TextView pathNameTxt;
         Button btnView;
         String pathName;
@@ -68,32 +70,11 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
                     displayMapDialog();
                 }
             });
-
-
         }
 
         public void displayMapDialog() {
-            dialogPath = new Dialog(itemView.getContext());
-            dialogPath.setContentView(R.layout.path_profile_dialog);
-            dialogPath.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            FragmentContainerView fcv = dialogPath.findViewById(R.id.fragmentContainerView);
-            PathDisplayFragment pathDisplayFragment = fcv.getFragment();
-            pathDisplayFragment.setPathName(pathName);
-            pathDisplayFragment.setProfileId(profileId);
-            dialogPath.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    PathDisplayFragment mapFragProf = fcv.getFragment();
-                    androidx.fragment.app.FragmentManager fragmentManager = mapFragProf.getFragMan();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.remove(mapFragProf);
-                    fragmentTransaction.commit();
-                }
-            });
+            dialogPath = new PathDialog(itemView.getContext(), pathName, profileId);
             dialogPath.show();
-            TextView txt = dialogPath.findViewById(R.id.txtPathnameProfile);
-            txt.setText(pathName);
-
             this.getAdapterPosition();
         }
 
@@ -102,6 +83,4 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         }
         public void setProfileId(int profileId){this.profileId = profileId;}
     }
-
-
 }

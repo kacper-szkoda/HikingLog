@@ -29,6 +29,7 @@ import java.util.Objects;
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.activities.BaseActivity;
 import be.kuleuven.gt.hikinglog.adapter.PathRecyclerViewAdapter;
+import be.kuleuven.gt.hikinglog.dialogs.ChangeUsernameDialog;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.FriendModel;
 import be.kuleuven.gt.hikinglog.state.MapState;
@@ -38,25 +39,22 @@ import be.kuleuven.gt.hikinglog.state.UserState;
 public class ProfileFragment extends Fragment {
     private ArrayList<PathModel> usrPaths;
     private TextView txtUsername;
-    private MapState mapState;
     private int profileId;
-    private BaseActivity mapsScreen;
-    private Dialog dialogChange;
-    private Button dialogBtnChange, dialogBtnCancel, btnAddChange;
+    private BaseActivity baseActivity;
+    private ChangeUsernameDialog dialogChange;
+    private Button btnAddChange;
     private int usrId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
         usrId = sharedPreferences.getInt("usrId", 1);
         Bundle args = getArguments();
         profileId = args.getInt("profileId", 1);
         usrPaths = new ArrayList<PathModel>();
-        mapsScreen = (BaseActivity) getActivity();
-        mapState = mapsScreen.returnMapState();
+        baseActivity = (BaseActivity) getActivity();
         btnAddChange = view.findViewById(R.id.btnAdd_Change);
         txtUsername = view.findViewById(R.id.txtProfUsername);
 
@@ -67,7 +65,6 @@ public class ProfileFragment extends Fragment {
         }
         setUpProfileButton();
         setUpPathModels();
-
         setUpSearch(view);
         return view;
     }
@@ -96,10 +93,10 @@ public class ProfileFragment extends Fragment {
 
     public void setUpPathModels() {
         //TODO implement buttons on the dialogs, refactor the dialog to be generic for the accepts and cancels below
-        mapState.getPathsPerUser(profileId, new VolleyCallback() {
+        MapState.INSTANCE.getPathsPerUser(profileId, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
-                JSONArray jsonArray = null;
+                JSONArray jsonArray;
                 try {
                     jsonArray = new JSONArray(stringResponse);
                 } catch (JSONException e) {
@@ -114,23 +111,23 @@ public class ProfileFragment extends Fragment {
                         throw new RuntimeException(e);
                     }
                 }
-                RecyclerView recyclerView = mapsScreen.findViewById(R.id.recyclerPaths);
-                PathRecyclerViewAdapter adapter = new PathRecyclerViewAdapter(mapsScreen, usrPaths, profileId);
+                RecyclerView recyclerView = baseActivity.findViewById(R.id.recyclerPaths);
+                PathRecyclerViewAdapter adapter = new PathRecyclerViewAdapter(baseActivity, usrPaths, profileId);
                 recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(mapsScreen));
+                recyclerView.setLayoutManager(new LinearLayoutManager(baseActivity));
             }
         });
     }
 
     public void setUpProfileButton() {
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = requireContext().
+                getSharedPreferences("user", Context.MODE_PRIVATE);
         if (profileId == sharedPreferences.getInt("usrId", 1)) {
             btnAddChange.setText("Change");
             btnAddChange.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialogChange = setUpDialog();
-                    dialogChange.show();
                 }
             });
         } else {
@@ -140,42 +137,9 @@ public class ProfileFragment extends Fragment {
         }
     }
 
-    public Dialog setUpDialog() {
-        dialogChange = new Dialog(getContext());
-        dialogChange.setContentView(R.layout.confirm_path_dialog);
-        dialogChange.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialogChange.setCancelable(false);
-
-        dialogBtnChange = dialogChange.findViewById(R.id.btnDialogSave);
-        dialogBtnCancel = dialogChange.findViewById(R.id.btnDialogDelete);
-        TextView txtPrompt = dialogChange.findViewById(R.id.txtDialogSave);
-        TextInputEditText txtInput = dialogChange.findViewById(R.id.inputPathname);
-
-        dialogBtnChange.setText("Change");
-        dialogBtnCancel.setText("Cancel");
-        txtPrompt.setText("Change username");
-
-        dialogBtnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogChange.dismiss();
-            }
-        });
-        dialogBtnChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogBtnChange.setEnabled(false);
-                if (txtInput.getText().toString().isEmpty()) {
-                    Toast.makeText(getActivity().getBaseContext(), "Input username", Toast.LENGTH_SHORT).show();
-                } else if (txtInput.getText().toString().contains(".")) {
-                    Toast.makeText(getActivity().getBaseContext(), "Username should not contain periods", Toast.LENGTH_SHORT).show();
-                } else {
-                    changeUsername(txtInput.getText().toString());
-                }
-                dialogBtnChange.setEnabled(true);
-                dialogChange.dismiss();
-            }
-        });
+    public ChangeUsernameDialog setUpDialog() {
+        dialogChange = new ChangeUsernameDialog(requireActivity(), this);
+        dialogChange.show();
         return dialogChange;
     }
 
@@ -217,7 +181,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onSuccess(String stringResponse) {
                 btnAddChange.setEnabled(true);
-                SharedPreferences.Editor editor = getContext().getSharedPreferences("user", Context.MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = getContext().
+                        getSharedPreferences("user", Context.MODE_PRIVATE).edit();
                 editor.putString("username", newUsername);
                 editor.apply();
                 txtUsername.setText(newUsername);

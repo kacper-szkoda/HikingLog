@@ -75,7 +75,7 @@ public class AcceptFragment extends Fragment {
                 UserState.INSTANCE.acceptFriend(profileId, dateTimeString, new VolleyCallback() {
                     @Override
                     public void onSuccess(String stringResponse) {
-                        ((BaseActivity) fragment.requireActivity()).changeToAcceptedChat(profileId, username);
+                        ((BaseActivity) fragment.requireActivity()).changeToAcceptedChat(profileId, username, true);
                     }
                 });
             }

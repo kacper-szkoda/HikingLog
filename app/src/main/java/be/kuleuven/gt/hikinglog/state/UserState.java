@@ -32,11 +32,13 @@ public enum UserState {
     }
     public void addNewUser(String usrname, String password, VolleyCallback callback){
         String nameOfService = "addUser";
+        usrname = usrname.trim();
         Map<String, String> params = SQLControl.paramBuilder(asList("password", "usrname"), asList(password, usrname));
         control.executePostRequest(nameOfService, params, callback);
     }
     public void changeUsername(String usrnameNew, VolleyCallback callback){
         String nameOfService = "changeUsername";
+        usrnameNew = usrnameNew.trim();
         String userid = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
         Map<String, String> params = SQLControl.paramBuilder(asList("userid", "newusername"), asList(userid,usrnameNew));
         control.executePostRequest(nameOfService, params, callback);
@@ -51,6 +53,7 @@ public enum UserState {
         return null;
     }
     public void findPasswordByUsername(String username, VolleyCallback callback){
+        username = username.trim();
         String URL_extension = SQLControl.urlBuilder("findPasswordByUsername", username);
         control.executeGetRequest(URL_extension, callback);
     }
