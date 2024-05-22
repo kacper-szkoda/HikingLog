@@ -80,7 +80,7 @@ public class SigninActivity extends AppCompatActivity {
                             btnConrfirm.setEnabled(true);
                             SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("usrname", txtUsrname.getText().toString());
+                            editor.putString("username", txtUsrname.getText().toString());
                             userState.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
                                 @Override
                                 public void onSuccess(String stringResponse) {
