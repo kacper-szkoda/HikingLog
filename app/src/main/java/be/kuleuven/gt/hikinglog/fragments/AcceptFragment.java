@@ -12,14 +12,11 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.activities.BaseActivity;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
-import be.kuleuven.gt.hikinglog.state.FriendModel;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class AcceptFragment extends Fragment {
@@ -28,6 +25,7 @@ public class AcceptFragment extends Fragment {
     int sender;
     TextView txtAcceptMessage;
     Button btnDecline, btnAccept;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -45,26 +43,25 @@ public class AcceptFragment extends Fragment {
         profileId = args.getInt("profileId");
         username = args.getString("username");
 
-        if (sender == 1){
+        if (sender == 1) {
             setUpReceiver(this);
-        }
-        else {
+        } else {
             setUpSender();
         }
         return view;
     }
 
-    public void setUpReceiver(AcceptFragment fragment){
+    public void setUpReceiver(AcceptFragment fragment) {
         txtAcceptMessage.setText(R.string.txtRequestAccept);
         btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    UserState.INSTANCE.deleteRequest(profileId, new VolleyCallback() {
-                        @Override
-                        public void onSuccess(String stringResponse) {
-                            ((BaseActivity) fragment.requireActivity()).requestDeclined();
-                        }
-                    });
+                UserState.INSTANCE.deleteRequest(profileId, new VolleyCallback() {
+                    @Override
+                    public void onSuccess(String stringResponse) {
+                        ((BaseActivity) fragment.requireActivity()).requestDeclined();
+                    }
+                });
             }
         });
         btnAccept.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +79,7 @@ public class AcceptFragment extends Fragment {
         });
     }
 
-    public void setUpSender(){
+    public void setUpSender() {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

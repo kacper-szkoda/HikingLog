@@ -12,10 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import be.kuleuven.gt.hikinglog.R;
@@ -73,11 +69,13 @@ public class ChatsFragment extends Fragment implements ChatHeadClickedListener {
             }
         });
     }
+
     @Override
     public void chatClicked(int idprofile, String username, boolean accepted, boolean sender) {
-        ((BaseActivity)getActivity()).changeToChat(idprofile, username, accepted, sender);
+        ((BaseActivity) getActivity()).changeToChat(idprofile, username, accepted, sender);
     }
-    public void setListeners(){
+
+    public void setListeners() {
         friends.forEach(friendModel -> friendModel.setListener(this));
     }
 }

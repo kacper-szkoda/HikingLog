@@ -54,8 +54,7 @@ public class BaseActivity extends AppCompatActivity {
                 replaceFragment(new HomeFragment());
             else if (item.getItemId() == R.id.profile) {
                 goToProfile();
-            }
-            else if (item.getItemId() == R.id.chat)
+            } else if (item.getItemId() == R.id.chat)
                 replaceFragment(new ChatsFragment());
             return true;
         });
@@ -65,7 +64,7 @@ public class BaseActivity extends AppCompatActivity {
             return insets;
         });
         Intent intent = getIntent();
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())){
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             search(query);
         }
@@ -83,7 +82,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())){
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             search(query);
         }
@@ -105,8 +104,7 @@ public class BaseActivity extends AppCompatActivity {
                         args.putString("username", query);
                         fragment.setArguments(args);
                         replaceFragment(fragment);
-                    } catch (JSONException e)
-                    {
+                    } catch (JSONException e) {
                         Toast.makeText(getBaseContext(), "No such user found", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
@@ -131,16 +129,15 @@ public class BaseActivity extends AppCompatActivity {
         return sharedPreferences.getInt("usrId", 1);
     }
 
-    public void changeToChat (int idprofile, String username, boolean friends, boolean sender) {
-        if (friends){
+    public void changeToChat(int idprofile, String username, boolean friends, boolean sender) {
+        if (friends) {
             changeToAcceptedChat(idprofile, username, false);
-        }
-        else {
+        } else {
             changeToAcceptScreen(idprofile, username, sender);
         }
     }
 
-    public void changeToAcceptedChat(int idprofile, String username, boolean fromAccept){
+    public void changeToAcceptedChat(int idprofile, String username, boolean fromAccept) {
         ArrayList<MessageModel> messages = new ArrayList<>();
         UserState.INSTANCE.getMessagesPerPair(idprofile, new VolleyCallback() {
             @Override
@@ -162,14 +159,13 @@ public class BaseActivity extends AppCompatActivity {
                     args.putInt("profileId", idprofile);
                     ChatMessagesFragment fragment = new ChatMessagesFragment();
                     fragment.setArguments(args);
-                    if (fromAccept){
+                    if (fromAccept) {
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         transaction.setReorderingAllowed(true);
                         transaction.replace(R.id.fragContainer, fragment);
                         transaction.commit();
-                    }
-                    else {
+                    } else {
                         replaceFragment(fragment);
                     }
 
@@ -180,7 +176,7 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    public void changeToAcceptScreen(int profileid, String username, boolean sender){
+    public void changeToAcceptScreen(int profileid, String username, boolean sender) {
         AcceptFragment fragment = new AcceptFragment();
         Bundle args = new Bundle();
         int senderInt = sender ? 1 : 0;
@@ -191,7 +187,7 @@ public class BaseActivity extends AppCompatActivity {
         replaceFragment(fragment);
     }
 
-    public void requestDeclined(){
+    public void requestDeclined() {
         ChatsFragment fragment = new ChatsFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -206,11 +202,9 @@ public class BaseActivity extends AppCompatActivity {
         super.onBackPressed();
         if (fcv.getFragment().getClass().equals(HomeFragment.class)) {
             binding.bottomNavigationView.getMenu().getItem(1).setChecked(true);
-        }
-        else if (fcv.getFragment().getClass().equals(ChatsFragment.class)){
+        } else if (fcv.getFragment().getClass().equals(ChatsFragment.class)) {
             binding.bottomNavigationView.getMenu().getItem(2).setChecked(true);
-        }
-        else if (fcv.getFragment().getClass().equals(ProfileFragment.class)){
+        } else if (fcv.getFragment().getClass().equals(ProfileFragment.class)) {
             binding.bottomNavigationView.getMenu().getItem(0).setChecked(true);
         }
 

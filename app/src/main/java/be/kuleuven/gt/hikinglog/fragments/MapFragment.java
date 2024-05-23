@@ -41,32 +41,38 @@ import be.kuleuven.gt.hikinglog.state.PathDrawer;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final String TAG = BaseActivity.class.getSimpleName();
+    private static final int DEFAULT_ZOOM = 15;
+    private final LatLng defaultLocation = new LatLng(50.8749, 4.7078);
+    SharedPreferences sharedPreferences;
     private boolean locationPermissionGranted;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private static final String TAG = BaseActivity.class.getSimpleName();
-    private final LatLng defaultLocation = new LatLng(50.8749, 4.7078);
     private Location lastKnownLocation;
-    private static final int DEFAULT_ZOOM = 15;
     private GoogleMap gMap;
     private ArrayList<LatLng> coords;
+    private final Runnable RecordPath = new Runnable() {
+        public void run() {
+            Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size() - 2),
+                    coords.get(coords.size() - 1)));
+        }
+    };
     private FragmentActivity parent;
     private Timer myTimer;
-    SharedPreferences sharedPreferences;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-            View view = inflater.inflate(R.layout.fragment_map, container, false);
-            sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
-            SupportMapFragment mapFragment = (SupportMapFragment)
-                    getChildFragmentManager().findFragmentByTag("mapFragment");
-            mapFragment.getMapAsync(this);
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
-            coords = new ArrayList<LatLng>();
-            parent = this.getActivity();
-            setStarted(false);
-            return view;
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+        SupportMapFragment mapFragment = (SupportMapFragment)
+                getChildFragmentManager().findFragmentByTag("mapFragment");
+        mapFragment.getMapAsync(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
+        coords = new ArrayList<LatLng>();
+        parent = this.getActivity();
+        setStarted(false);
+        return view;
     }
 
     @Override
@@ -169,13 +175,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private final Runnable RecordPath = new Runnable() {
-        public void run() {
-            Polyline polyline = gMap.addPolyline(PathDrawer.createLine(coords.get(coords.size() - 2),
-                    coords.get(coords.size() - 1)));
-        }
-    };
-
     private void pathMethod() {
         getDeviceLocation();
     }
@@ -205,8 +204,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 }
             });
-        } catch (ArrayIndexOutOfBoundsException e)
-        {
+        } catch (ArrayIndexOutOfBoundsException e) {
             Log.w("EXCEPTION", "No coords in array", e);
         }
     }

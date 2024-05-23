@@ -8,8 +8,6 @@ import android.content.SharedPreferences;
 import com.android.volley.RequestQueue;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.json.JSONArray;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -19,14 +17,13 @@ import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 
 public enum MapState {
     INSTANCE;
-    final SQLControl control = SQLControl.INSTANCE;
-    RequestQueue requestQueue;
-    private final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
-    Context context;
-    SharedPreferences sharedPreferences;
     public static int latestPathId;
     public static int idusr;
-
+    final SQLControl control = SQLControl.INSTANCE;
+    private final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
+    RequestQueue requestQueue;
+    Context context;
+    SharedPreferences sharedPreferences;
 
     public void postMap(LatLng coords, VolleyCallback callback) {
         latestPathId = sharedPreferences.getInt("latestPathId", 1);
@@ -51,11 +48,13 @@ public enum MapState {
 
         control.executeGetRequest(URL_Fin, callback);
     }
-    public void renameFromName(String newName, String oldName, int idusr, VolleyCallback callback){
+
+    public void renameFromName(String newName, String oldName, int idusr, VolleyCallback callback) {
         String nameOfService = "renameFromName";
-        Map<String,String> params = SQLControl.paramBuilder(asList("name","pathname", "iduser"), asList(newName, oldName, String.valueOf(idusr)));
+        Map<String, String> params = SQLControl.paramBuilder(asList("name", "pathname", "iduser"), asList(newName, oldName, String.valueOf(idusr)));
         SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
     }
+
     public void getLatestPathId(VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("getLatestPathId", String.valueOf(idusr));
 
@@ -93,17 +92,18 @@ public enum MapState {
 
         control.executeGetRequest(URL_Fin, callback);
     }
-    public void deleteEntirePathFromDialog(String pathname, VolleyCallback callback){
+
+    public void deleteEntirePathFromDialog(String pathname, VolleyCallback callback) {
         String nameOfService = "deleteEntries";
         idusr = sharedPreferences.getInt("usrId", 1);
-        Map<String,String> params = SQLControl.paramBuilder(asList("pathname", "iduser"), asList(pathname, String.valueOf(idusr)));
+        Map<String, String> params = SQLControl.paramBuilder(asList("pathname", "iduser"), asList(pathname, String.valueOf(idusr)));
         SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
         params = SQLControl.paramBuilder(asList("pathname", "iduser"), asList(pathname, String.valueOf(idusr)));
         nameOfService = "deleteFromName";
         SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
     }
 
-    public void setUpMapState(Context context){
+    public void setUpMapState(Context context) {
         control.setUp(context);
         sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
         idusr = sharedPreferences.getInt("usrId", 1);

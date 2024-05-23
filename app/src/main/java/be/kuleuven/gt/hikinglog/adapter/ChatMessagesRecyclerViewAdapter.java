@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,7 +29,7 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
                                            LastMessageVisibleListener father, LinearLayoutManager layoutManager) {
         this.context = context;
         this.messagesDisplayed = messages;
-        SharedPreferences sharedPreferences = context.getSharedPreferences("user",Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
         usrId = sharedPreferences.getInt("usrId", 1);
         this.listener = father;
         this.layoutManager = layoutManager;
@@ -42,10 +41,12 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
         LayoutInflater inflater = LayoutInflater.from(context);
         View view;
         switch (viewType) {
-            case 1: view = inflater.inflate(R.layout.recycler_view_row_message_yours,parent, false);
-            break;
-            case 0: view = inflater.inflate(R.layout.recycler_view_row_message_to_you, parent, false);
-            break;
+            case 1:
+                view = inflater.inflate(R.layout.recycler_view_row_message_yours, parent, false);
+                break;
+            case 0:
+                view = inflater.inflate(R.layout.recycler_view_row_message_to_you, parent, false);
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + viewType);
         }
@@ -63,7 +64,7 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
         holder.getDate().setText(message.getDate());
         holder.getMessage().setText(message.getText());
         holder.setPosition(position);
-        if (position == messagesDisplayed.size()-1){
+        if (position == messagesDisplayed.size() - 1) {
             listener.scrolledPast(false);
         }
 //        int lastMessage = layoutManager.findLastCompletelyVisibleItemPosition();
@@ -72,8 +73,7 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
     @Override
     public void onViewDetachedFromWindow(@NonNull MyViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if (holder.getLayoutPosition() == messagesDisplayed.size()-1)
-        {
+        if (holder.getLayoutPosition() == messagesDisplayed.size() - 1) {
             listener.scrolledPast(true);
         }
     }
@@ -89,6 +89,14 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
         ConstraintLayout outsideConstraint, insideConstraint;
         private int position;
 
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            message = itemView.findViewById(R.id.txtMessage);
+            date = itemView.findViewById(R.id.txtDate);
+            outsideConstraint = itemView.findViewById(R.id.constraintOutside);
+            insideConstraint = itemView.findViewById(R.id.constraintInside);
+        }
+
         public TextView getMessage() {
             return message;
         }
@@ -97,17 +105,11 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
             return date;
         }
 
-        public MyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            message = itemView.findViewById(R.id.txtMessage);
-            date = itemView.findViewById(R.id.txtDate);
-            outsideConstraint = itemView.findViewById(R.id.constraintOutside);
-            insideConstraint = itemView.findViewById(R.id.constraintInside);
-        }
-        public void setPosition(int position){
+        public void setPosition(int position) {
             this.position = position;
         }
-        public int getPositionList(){
+
+        public int getPositionList() {
             return position;
         }
     }

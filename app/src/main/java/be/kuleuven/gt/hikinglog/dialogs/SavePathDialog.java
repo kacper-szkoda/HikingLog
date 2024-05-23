@@ -8,11 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentContainerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,23 +18,22 @@ import org.json.JSONObject;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.fragments.MapFragment;
-import be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.MapState;
-import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class SavePathDialog extends Dialog {
 
-    private Button dialogBtnSave, dialogBtnDelete;
     SavePathDialog dialog;
     MapFragment mapFragment;
+    private Button dialogBtnSave, dialogBtnDelete;
     private EditText textView;
 
     public SavePathDialog(@NonNull Context context, MapFragment mapFragment) {
-        super(context);;
+        super(context);
         dialog = this;
         this.mapFragment = mapFragment;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +46,8 @@ public class SavePathDialog extends Dialog {
         textView = this.findViewById(R.id.inputPathname);
         setUpListeners();
     }
-    public void setUpListeners(){
+
+    public void setUpListeners() {
         dialogBtnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +74,8 @@ public class SavePathDialog extends Dialog {
             }
         });
     }
-    public void checkIfNoDuplicatePaths(){
+
+    public void checkIfNoDuplicatePaths() {
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         int usrId = sharedPreferences.getInt("usrId", 1);
         MapState.INSTANCE.getPathsPerUser(usrId, new VolleyCallback() {
@@ -84,10 +83,10 @@ public class SavePathDialog extends Dialog {
             public void onSuccess(String stringResponse) {
                 try {
                     JSONArray jsonArray = new JSONArray(stringResponse);
-                    for (int i = 0; i < jsonArray.length(); i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String pathNameUsed = jsonObject.getString("pathname");
-                        if (pathNameUsed.equals(textView.getText().toString())){
+                        if (pathNameUsed.equals(textView.getText().toString())) {
                             Toast.makeText(getContext(), "This pathname is used already", Toast.LENGTH_LONG).show();
                             textView.setText("");
                             return;

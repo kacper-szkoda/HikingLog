@@ -1,6 +1,5 @@
 package be.kuleuven.gt.hikinglog.helpers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -8,12 +7,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
-import org.json.JSONStringer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,14 +16,33 @@ import java.util.Map;
 
 public enum SQLControl {
     INSTANCE;
+    private static final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
     RequestQueue requestQueue;
     Context context;
-    private static final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
+
+    public static String urlBuilder(String... args) {
+        //TODO Add automatic whitespace replacement
+        String build = "";
+        for (String arg : args) {
+            build += arg;
+            build += "/";
+        }
+        return build.substring(0, build.length() - 1);
+    }
+
+    public static Map<String, String> paramBuilder(List<String> keys, List<String> values) {
+        Map<String, String> params = new HashMap<>();
+        for (int i = 0; i < keys.size(); i++) {
+            params.put(keys.get(i), values.get(i));
+        }
+        return params;
+    }
+
     public RequestQueue getRequestQueue() {
         return requestQueue;
     }
 
-    public void executeGetRequest( String urlExtension, VolleyCallback callback) {
+    public void executeGetRequest(String urlExtension, VolleyCallback callback) {
         StringRequest queueRequest = new StringRequest(
                 Request.Method.GET,
                 QUEUE_URL + urlExtension,
@@ -69,33 +83,16 @@ public enum SQLControl {
                                 Toast.LENGTH_LONG).show();
                     }
                 }
-                ) {
+        ) {
             @Override
-            protected Map<String, String> getParams(){
+            protected Map<String, String> getParams() {
                 return params;
             }
         };
         requestQueue.add(stringRequest);
     }
-    public static String urlBuilder( String... args) {
-        //TODO Add automatic whitespace replacement
-        String build = "";
-        for (String arg : args) {
-            build += arg;
-            build += "/";
-        }
-        return build.substring(0, build.length() - 1);
-    }
 
-    public static Map<String, String> paramBuilder(List<String> keys, List<String> values) {
-        Map<String, String> params = new HashMap<>();
-        for (int i = 0; i < keys.size(); i++) {
-            params.put(keys.get(i), values.get(i));
-        }
-        return params;
-    }
-
-    public void setUp(Context context){
+    public void setUp(Context context) {
         requestQueue = Volley.newRequestQueue(context);
         this.context = context;
     }

@@ -1,6 +1,5 @@
 package be.kuleuven.gt.hikinglog.fragments;
 
-import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,20 +10,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.activities.BaseActivity;
@@ -114,7 +109,7 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void run() {
                         RecyclerView recyclerView = baseActivity.findViewById(R.id.recyclerPaths);
-                        PathRecyclerViewAdapter adapter = new PathRecyclerViewAdapter(baseActivity, usrPaths, profileId, baseActivity );
+                        PathRecyclerViewAdapter adapter = new PathRecyclerViewAdapter(baseActivity, usrPaths, profileId, baseActivity);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setLayoutManager(new LinearLayoutManager(baseActivity));
                     }

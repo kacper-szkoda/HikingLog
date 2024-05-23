@@ -78,7 +78,7 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
                                 public void run() {
                                     try {
                                         gMap.addPolyline(PathDrawer.createLine(coords.get(j - 1), coords.get(j)));
-                                    } catch (ArrayIndexOutOfBoundsException e){
+                                    } catch (ArrayIndexOutOfBoundsException e) {
                                         Log.w("EXCEPTION", "Path was empty", e);
                                     }
                                 }
@@ -88,7 +88,7 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
                         Log.w("EXCEPTION", "JSON was empty", e);
                     }
                 }
-                if (coords.size() != 0){
+                if (coords.size() != 0) {
                     gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                             new LatLng(coords.get(coords.size() - 1).latitude, coords.get(coords.size() - 1).longitude), 15));
                 }
@@ -99,7 +99,10 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
     public void setPathName(String pathName) {
         this.pathName = pathName;
     }
-    public void setProfileId(int profileId){this.profileId =profileId;}
+
+    public void setProfileId(int profileId) {
+        this.profileId = profileId;
+    }
 
     public FragmentManager getFragMan() {
         return getActivity().getSupportFragmentManager();

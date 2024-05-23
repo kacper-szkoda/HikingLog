@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +38,7 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
     TextView btnSend;
     Timer myTimer;
     boolean canRefresh;
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -64,18 +64,18 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
         return view;
     }
 
-    public void setUpMessages(View view){
+    public void setUpMessages(View view) {
         ChatMessagesFragment father = this;
-            try {
-                requireActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        RecyclerView recyclerView = view.findViewById(R.id.recyclerMessages);
-                        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                        ChatMessagesRecyclerViewAdapter adapter = new ChatMessagesRecyclerViewAdapter(getContext(), messages, father, layoutManager);
-                        recyclerView.setAdapter(adapter);
-                        layoutManager.setStackFromEnd(true);
-                        recyclerView.setLayoutManager(layoutManager);
+        try {
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    RecyclerView recyclerView = view.findViewById(R.id.recyclerMessages);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                    ChatMessagesRecyclerViewAdapter adapter = new ChatMessagesRecyclerViewAdapter(getContext(), messages, father, layoutManager);
+                    recyclerView.setAdapter(adapter);
+                    layoutManager.setStackFromEnd(true);
+                    recyclerView.setLayoutManager(layoutManager);
 
 //                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 //                            @Override
@@ -88,16 +88,16 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
 //                                else canRefresh = currentLastVisible == messages.size() - 1;
 //                            }
 //                        });
-                    }
-                });
-            } catch (IllegalStateException ignored) {
-            }
-    }
-    public void sendMessage(View view){
-        if (txtInput.getText().toString().isEmpty()){
-            Toast.makeText(getActivity().getBaseContext(), "Do not send and empty message", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (IllegalStateException ignored) {
         }
-        else {
+    }
+
+    public void sendMessage(View view) {
+        if (txtInput.getText().toString().isEmpty()) {
+            Toast.makeText(getActivity().getBaseContext(), "Do not send and empty message", Toast.LENGTH_SHORT).show();
+        } else {
             UserState.INSTANCE.sendMessage(txtInput.getText().toString(), profileId, new VolleyCallback() {
                 @Override
                 public void onSuccess(String stringResponse) {
@@ -107,14 +107,15 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
             });
         }
     }
-    public void refreshChat( View view){
+
+    public void refreshChat(View view) {
         ArrayList<MessageModel> messagesNew = new ArrayList<>();
         UserState.INSTANCE.getMessagesPerPair(profileId, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
                 try {
                     JSONArray jsonArray = new JSONArray(stringResponse);
-                    for (int i = 0; i < jsonArray.length(); i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String text = jsonObject.getString("message");
                         String date = jsonObject.getString("time");
@@ -131,12 +132,13 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
             }
         });
     }
-    public void schedulePolling(View view){
+
+    public void schedulePolling(View view) {
         myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (canRefresh){
+                if (canRefresh) {
                     refreshChat(view);
                 }
             }

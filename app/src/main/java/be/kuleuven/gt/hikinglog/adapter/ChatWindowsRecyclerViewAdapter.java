@@ -1,38 +1,23 @@
 package be.kuleuven.gt.hikinglog.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import be.kuleuven.gt.hikinglog.activities.BaseActivity;
-import be.kuleuven.gt.hikinglog.state.FriendModel;
-import be.kuleuven.gt.hikinglog.state.PathModel;
-
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import be.kuleuven.gt.hikinglog.R;
-import be.kuleuven.gt.hikinglog.fragments.PathDisplayFragment;
+import be.kuleuven.gt.hikinglog.state.FriendModel;
 
 public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWindowsRecyclerViewAdapter.MyViewHolder> {
     Context context;
@@ -60,19 +45,16 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         String today = format.format(new Date());
         String newDate = "";
         if (!date.equals("null")) {
-            if (today.equals((date.substring(0,10)))){
-                newDate = date.substring(10,16);
-            }
-            else {
+            if (today.equals((date.substring(0, 10)))) {
+                newDate = date.substring(10, 16);
+            } else {
                 newDate = date.substring(0, 16);
             }
         }
         String lastMessage = friends.get(position).getLastMessage();
-        if (lastMessage.equals("null"))
-        {
+        if (lastMessage.equals("null")) {
             holder.setLastMessage("", newDate);
-        }
-        else {
+        } else {
             holder.setLastMessage(friends.get(position).getLastMessage(), newDate);
         }
         int profileId = friends.get(position).getIdprofile();
@@ -104,6 +86,7 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         TextView txtFriendUsername, txtHeadMessage, txtHeadTime;
         Context context;
         FriendModel friend;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             cardViewChat = itemView.findViewById(R.id.cardViewChat);
@@ -115,11 +98,16 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         public void setUsername(String username) {
             this.username = username;
         }
-        public void setProfileId(int profileId){this.profileId = profileId;}
-        public void setAccepted(boolean accepted){
+
+        public void setProfileId(int profileId) {
+            this.profileId = profileId;
+        }
+
+        public void setAccepted(boolean accepted) {
             this.accepted = accepted;
         }
-        public void setColor(){
+
+        public void setColor() {
             Handler handler = new Handler(context.getMainLooper());
             handler.post(new Runnable() {
                 @Override
@@ -127,25 +115,33 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
                     if (accepted) {
                         cardViewChat.setCardBackgroundColor(0xFFF1EAB2);
                         txtFriendUsername.setTextColor(0xFFFFFFFF);
-                    }
-                    else {
+                    } else {
                         cardViewChat.setCardBackgroundColor(0xFFA99995);
                         txtFriendUsername.setTextColor(0xFFFFFFFF);
                     }
                 }
             });
         }
-        public CardView returnCard(){
+
+        public CardView returnCard() {
             return cardViewChat;
         }
-        public TextView returnTextViewFriend(){
+
+        public TextView returnTextViewFriend() {
             return txtFriendUsername;
         }
-        public void setContext(Context context){
+
+        public void setContext(Context context) {
             this.context = context;
         }
-        public void setFriend (FriendModel friend){this.friend = friend;}
-        public FriendModel getFriend(){return friend;}
+
+        public FriendModel getFriend() {
+            return friend;
+        }
+
+        public void setFriend(FriendModel friend) {
+            this.friend = friend;
+        }
 
         public void setLastMessage(String message, String time) {
             Handler handler = new Handler(Looper.getMainLooper());
@@ -155,8 +151,7 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
                     if (accepted) {
                         txtHeadMessage.setText(message);
                         txtHeadTime.setText(time);
-                    }
-                    else {
+                    } else {
                         txtHeadMessage.setText("Awaiting acceptance");
                         txtHeadTime.setVisibility(View.INVISIBLE);
                     }

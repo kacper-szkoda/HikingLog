@@ -45,13 +45,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onBtnLogin_Clicked(View Caller) {
-        if (txtUsrname.getText().toString().isEmpty())
-        {
+        if (txtUsrname.getText().toString().isEmpty()) {
             Toast.makeText(getBaseContext(), "Input username", Toast.LENGTH_SHORT).show();
             return;
-        }
-        else if (txtPassword.getText().toString().isEmpty())
-        {
+        } else if (txtPassword.getText().toString().isEmpty()) {
             Toast.makeText(getBaseContext(), "Input password", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -63,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONArray jsonArray = new JSONArray(stringResponse);
                     try {
                         JSONObject jsonObject = jsonArray.getJSONObject(0);
-                        if (jsonObject.getString("password").equals(txtPassword.getText().toString())){
+                        if (jsonObject.getString("password").equals(txtPassword.getText().toString())) {
                             btnLogin.setEnabled(true);
                             SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -80,17 +77,15 @@ public class MainActivity extends AppCompatActivity {
                                         Intent intent = new Intent(getBaseContext(), BaseActivity.class);
                                         startActivity(intent);
                                     } catch (JSONException e) {
-                                        Toast.makeText(getBaseContext(),"Index out of range", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getBaseContext(), "Index out of range", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             Toast.makeText(getBaseContext(), "Incorrect password", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (JSONException exception){
+                    } catch (JSONException exception) {
                         Toast.makeText(getBaseContext(), "Usermame not in database", Toast.LENGTH_SHORT).show();
-                        return;
                     }
                 } catch (JSONException e) {
                     Toast.makeText(getBaseContext(), "No array", Toast.LENGTH_SHORT).show();

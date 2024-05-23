@@ -18,7 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import be.kuleuven.gt.hikinglog.R;
-import be.kuleuven.gt.hikinglog.helpers.SQLControl;
 import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
@@ -26,6 +25,7 @@ public class SigninActivity extends AppCompatActivity {
     TextView txtUsrname, txtPassword, txtPasswordRepeat;
     Button btnConrfirm;
     UserState userState = UserState.INSTANCE;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +49,10 @@ public class SigninActivity extends AppCompatActivity {
         } else if (txtUsrname.getText().toString().contains(".")) {
             Toast.makeText(getBaseContext(), "Username should not contain periods", Toast.LENGTH_SHORT).show();
             return;
-        }
-        else if (txtPassword.getText().toString().isEmpty() || txtPassword.getText().toString().isEmpty()){
+        } else if (txtPassword.getText().toString().isEmpty() || txtPassword.getText().toString().isEmpty()) {
             Toast.makeText(getBaseContext(), "Both passwords need to be filled in", Toast.LENGTH_SHORT).show();
             return;
-        }
-        else if (!(txtPassword.getText().toString().equals(txtPasswordRepeat.getText().toString()))) {
+        } else if (!(txtPassword.getText().toString().equals(txtPasswordRepeat.getText().toString()))) {
             Toast.makeText(getBaseContext(), "Passwords should match", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -68,11 +66,10 @@ public class SigninActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                if (!jsonArray.isNull(0)){
+                if (!jsonArray.isNull(0)) {
                     Toast.makeText(getBaseContext(), "Username already in database", Toast.LENGTH_SHORT).show();
                     btnConrfirm.setEnabled(true);
-                }
-                else {
+                } else {
                     Toast.makeText(getBaseContext(), "Account successfully created!", Toast.LENGTH_SHORT).show();
                     userState.addNewUser(txtUsrname.getText().toString(), txtPassword.getText().toString(), new VolleyCallback() {
                         @Override
@@ -96,7 +93,6 @@ public class SigninActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-                            return;
                         }
                     });
                 }
