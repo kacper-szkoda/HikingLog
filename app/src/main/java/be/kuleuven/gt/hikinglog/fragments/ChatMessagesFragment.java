@@ -41,7 +41,6 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         usrId = sharedPreferences.getInt("usrId", 1);
@@ -76,18 +75,6 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
                     recyclerView.setAdapter(adapter);
                     layoutManager.setStackFromEnd(true);
                     recyclerView.setLayoutManager(layoutManager);
-
-//                        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//                            @Override
-//                            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                                super.onScrollStateChanged(recyclerView, newState);
-//                                int currentLastVisible = layoutManager.findLastVisibleItemPosition();
-//                                if (currentLastVisible == -1){
-//                                    canRefresh = true;
-//                                }
-//                                else canRefresh = currentLastVisible == messages.size() - 1;
-//                            }
-//                        });
                 }
             });
         } catch (IllegalStateException ignored) {
@@ -96,7 +83,7 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
 
     public void sendMessage(View view) {
         if (txtInput.getText().toString().isEmpty()) {
-            Toast.makeText(getActivity().getBaseContext(), "Do not send and empty message", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity().getBaseContext(), "Do not send an empty message", Toast.LENGTH_SHORT).show();
         } else {
             UserState.INSTANCE.sendMessage(txtInput.getText().toString(), profileId, new VolleyCallback() {
                 @Override

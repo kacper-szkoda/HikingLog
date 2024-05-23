@@ -57,7 +57,7 @@ public class SigninActivity extends AppCompatActivity {
             return;
         }
         btnConfirm.setEnabled(false);
-        userState.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
+        UserState.INSTANCE.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
                 JSONArray jsonArray = null;
@@ -71,14 +71,14 @@ public class SigninActivity extends AppCompatActivity {
                     btnConfirm.setEnabled(true);
                 } else {
                     Toast.makeText(getBaseContext(), "Account successfully created!", Toast.LENGTH_SHORT).show();
-                    userState.addNewUser(txtUsrname.getText().toString(), txtPassword.getText().toString(), new VolleyCallback() {
+                    UserState.INSTANCE.addNewUser(txtUsrname.getText().toString(), txtPassword.getText().toString(), new VolleyCallback() {
                         @Override
                         public void onSuccess(String stringResponse) {
                             btnConfirm.setEnabled(true);
                             SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("username", txtUsrname.getText().toString());
-                            userState.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
+                            UserState.INSTANCE.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
                                 @Override
                                 public void onSuccess(String stringResponse) {
                                     try {

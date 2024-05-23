@@ -58,6 +58,7 @@ public class ProfileFragment extends Fragment {
         } else {
             txtUsername.setText(args.getString("username"));
         }
+
         setUpProfileButton();
         setUpPathModels();
         setUpSearch(view);

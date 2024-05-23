@@ -89,6 +89,5 @@ public class PathDialog extends Dialog {
     private void resetProfile() {
         dialog.dismiss();
         father.goToProfile();
-//        father.setUpPathModels();
     }
 }

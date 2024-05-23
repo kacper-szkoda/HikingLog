@@ -28,10 +28,6 @@ public class MessageModel implements Serializable {
         return text;
     }
 
-    public int getReceiver() {
-        return receiver;
-    }
-
     public String getDate() {
         return date;
     }

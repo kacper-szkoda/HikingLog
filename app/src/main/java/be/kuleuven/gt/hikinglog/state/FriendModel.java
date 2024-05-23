@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import be.kuleuven.gt.hikinglog.helpers.ChatHeadClickedListener;
 
 public class FriendModel {
-    ArrayList<String> messagesDisplayed;
     int idprofile;
     String username;
     String dateAccepted;
@@ -27,7 +26,7 @@ public class FriendModel {
         this.lastMessage = lastMessage;
         this.dateLastMessage = dateLastMessage;
         if (!dateLastMessage.equals("null")) {
-            dateLastMessage = dateLastMessage.substring(0, 16);
+            this.dateLastMessage = dateLastMessage.substring(0, 16);
         }
         accepted = !dateAccepted.equals("null");
     }
@@ -62,28 +61,12 @@ public class FriendModel {
         return idprofile;
     }
 
-    public void setIdprofile(int idprofile) {
-        this.idprofile = idprofile;
-    }
-
     public String getUsername() {
         return username;
     }
 
-    public String getDateAccepted() {
-        return dateAccepted;
-    }
-
-    public void setDateAccepted(String dateAccepted) {
-        this.dateAccepted = dateAccepted;
-    }
-
     public String getLastMessage() {
         return lastMessage;
-    }
-
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
     }
 
     public String getDateLastMessage() {

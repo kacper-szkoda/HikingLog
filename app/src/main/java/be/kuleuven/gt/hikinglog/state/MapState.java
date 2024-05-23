@@ -20,9 +20,6 @@ public enum MapState {
     public static int latestPathId;
     public static int idusr;
     final SQLControl control = SQLControl.INSTANCE;
-    private final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
-    RequestQueue requestQueue;
-    Context context;
     SharedPreferences sharedPreferences;
 
     public void postMap(LatLng coords, VolleyCallback callback) {
@@ -45,51 +42,38 @@ public enum MapState {
 
     public void startPath(VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("initPath", String.valueOf(idusr));
-
         control.executeGetRequest(URL_Fin, callback);
-    }
-
-    public void renameFromName(String newName, String oldName, int idusr, VolleyCallback callback) {
-        String nameOfService = "renameFromName";
-        Map<String, String> params = SQLControl.paramBuilder(asList("name", "pathname", "iduser"), asList(newName, oldName, String.valueOf(idusr)));
-        SQLControl.INSTANCE.executePostRequest(nameOfService, params, callback);
     }
 
     public void getLatestPathId(VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("getLatestPathId", String.valueOf(idusr));
-
         control.executeGetRequest(URL_Fin, callback);
     }
 
     public void renamePathEntries(String pathname, VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("savePath", pathname, String.valueOf(latestPathId));
-
         control.executeGetRequest(URL_Fin, callback);
     }
 
     public void renamePath(String pathname, VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("renamePath", pathname, String.valueOf(latestPathId));
-
         control.executeGetRequest(URL_Fin, callback);
     }
 
     public void deletePath(VolleyCallback callback) {
         int userId = sharedPreferences.getInt("usrId", 1);
         String URL_Fin = SQLControl.urlBuilder("deletePath", String.valueOf(latestPathId), String.valueOf(userId));
-
         control.executeGetRequest(URL_Fin, callback);
     }
 
     public void deletePathEntries(VolleyCallback callback) {
         idusr = sharedPreferences.getInt("usrId", 1);
         String URL_Fin = SQLControl.urlBuilder("deleteEntries", String.valueOf(latestPathId), String.valueOf(idusr));
-
         control.executeGetRequest(URL_Fin, callback);
     }
 
     public void getPathsPerUser(int usrId, VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("getPathsPerUser", String.valueOf(usrId));
-
         control.executeGetRequest(URL_Fin, callback);
     }
 

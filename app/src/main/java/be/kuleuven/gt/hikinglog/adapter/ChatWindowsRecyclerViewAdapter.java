@@ -39,6 +39,25 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
     @Override
     public void onBindViewHolder(@NonNull ChatWindowsRecyclerViewAdapter.MyViewHolder holder, int position) {
         holder.setContext(context);
+        setUpMessagePreview(holder, position);
+
+        int profileId = friends.get(position).getIdprofile();
+        String username = friends.get(position).getUsername();
+        holder.setProfileId(profileId);
+        holder.setUsername(username);
+        holder.returnTextViewFriend().setText(username);
+        holder.setAccepted(friends.get(position).getAccepted());
+        holder.setColor();
+        holder.setFriend(friends.get(position));
+        holder.returnCard().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.getFriend().enterChat();
+            }
+        });
+    }
+
+    private void setUpMessagePreview(@NonNull MyViewHolder holder, int position) {
         String date = friends.get(position).getDateLastMessage();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String today = format.format(new Date());
@@ -56,20 +75,6 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
         } else {
             holder.setLastMessage(friends.get(position).getLastMessage(), newDate);
         }
-        int profileId = friends.get(position).getIdprofile();
-        String username = friends.get(position).getUsername();
-        holder.setProfileId(profileId);
-        holder.setUsername(username);
-        holder.returnTextViewFriend().setText(username);
-        holder.setAccepted(friends.get(position).getAccepted());
-        holder.setColor();
-        holder.setFriend(friends.get(position));
-        holder.returnCard().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.getFriend().enterChat();
-            }
-        });
     }
 
     @Override

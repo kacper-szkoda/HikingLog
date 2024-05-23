@@ -57,7 +57,6 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         String pathName;
         int profileId;
         BaseActivity father;
-        private PathDialog dialogPath;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -73,9 +72,8 @@ public class PathRecyclerViewAdapter extends RecyclerView.Adapter<PathRecyclerVi
         }
 
         public void displayMapDialog() {
-            dialogPath = new PathDialog(itemView.getContext(), pathName, profileId, father);
+            PathDialog dialogPath = new PathDialog(itemView.getContext(), pathName, profileId, father);
             dialogPath.show();
-            this.getAdapterPosition();
         }
 
         public void setPathName(String pathName) {

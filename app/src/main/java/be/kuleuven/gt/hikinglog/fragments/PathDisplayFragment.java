@@ -37,8 +37,6 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_path_display, container, false);
         SupportMapFragment mapFragment = (SupportMapFragment)
                 getChildFragmentManager().findFragmentByTag("mapFragProf");
@@ -58,7 +56,7 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
         MapState.INSTANCE.recoverMap(profileId, pathName, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
-                JSONArray jsonArray = null;
+                JSONArray jsonArray;
                 try {
                     jsonArray = new JSONArray(stringResponse);
                 } catch (JSONException e) {
@@ -88,9 +86,10 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
                         Log.w("EXCEPTION", "JSON was empty", e);
                     }
                 }
-                if (coords.size() != 0) {
+                if (!coords.isEmpty()) {
                     gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(coords.get(coords.size() - 1).latitude, coords.get(coords.size() - 1).longitude), 15));
+                            new LatLng(coords.get(coords.size() - 1).latitude,
+                                    coords.get(coords.size() - 1).longitude), 15));
                 }
             }
         });

@@ -21,7 +21,6 @@ public enum SQLControl {
     Context context;
 
     public static String urlBuilder(String... args) {
-        //TODO Add automatic whitespace replacement
         String build = "";
         for (String arg : args) {
             build += arg;
@@ -37,11 +36,6 @@ public enum SQLControl {
         }
         return params;
     }
-
-    public RequestQueue getRequestQueue() {
-        return requestQueue;
-    }
-
     public void executeGetRequest(String urlExtension, VolleyCallback callback) {
         StringRequest queueRequest = new StringRequest(
                 Request.Method.GET,

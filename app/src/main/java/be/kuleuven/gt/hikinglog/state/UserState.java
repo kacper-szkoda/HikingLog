@@ -17,13 +17,8 @@ import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 
 public enum UserState {
     INSTANCE;
-    public static int latestPathId;
     final SQLControl control = SQLControl.INSTANCE;
-    private final String QUEUE_URL = "https://studev.groept.be/api/a23PT313/";
-    RequestQueue requestQueue;
     Context context;
-    SharedPreferences sharedPreferences;
-
     public void findByUsername(String usrname, VolleyCallback callback) {
         String nameOfService = "findIDForUsername";
         String URL_extension = SQLControl.urlBuilder(nameOfService, usrname);
@@ -45,31 +40,9 @@ public enum UserState {
         control.executePostRequest(nameOfService, params, callback);
     }
 
-    public void sendFriendRequest(int idprofile, VolleyCallback callback) {
-        String nameOfService = "sendFriendRequest";
-        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
-        Map<String, String> params = SQLControl.paramBuilder(asList("iduser", "idprofile"), asList(iduser, String.valueOf(idprofile)));
-        control.executePostRequest(nameOfService, params, callback);
-    }
-
-    public List<String> suggestUsermames(String lettersEntered, VolleyCallback callback) {
-        return null;
-    }
-
     public void findPasswordByUsername(String username, VolleyCallback callback) {
         username = username.trim();
         String URL_extension = SQLControl.urlBuilder("findPasswordByUsername", username);
-        control.executeGetRequest(URL_extension, callback);
-    }
-
-    public void findFriends(VolleyCallback callback) {
-        String iduser = String.valueOf(context.getSharedPreferences("user", Context.MODE_PRIVATE).getInt("usrId", 1));
-        String URL_extension = SQLControl.urlBuilder("findFriendsAndUsernames", iduser, iduser);
-        control.executeGetRequest(URL_extension, callback);
-    }
-
-    public void getUsernameForID(int idprofile, VolleyCallback callback) {
-        String URL_extension = SQLControl.urlBuilder("getUsernameForID", String.valueOf(idprofile));
         control.executeGetRequest(URL_extension, callback);
     }
 

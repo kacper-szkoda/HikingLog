@@ -12,8 +12,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import be.kuleuven.gt.hikinglog.R;
 import be.kuleuven.gt.hikinglog.fragments.ProfileFragment;
+import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
+import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class ChangeUsernameDialog extends Dialog {
     ChangeUsernameDialog dialog;
@@ -56,17 +61,32 @@ public class ChangeUsernameDialog extends Dialog {
         dialogBtnChange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialogBtnChange.setEnabled(false);
-                if (dialog.getTxtInput().getText().toString().isEmpty()) {
-                    Toast.makeText(context, "Input username", Toast.LENGTH_SHORT).show();
-                } else if (dialog.getTxtInput().getText().toString().contains(".")) {
-                    Toast.makeText(context, "Username should not contain periods", Toast.LENGTH_SHORT).show();
-                } else {
-                    father.changeUsername(dialog.getTxtInput().getText().toString());
-                    txtInput.setText("");
-                }
-                dialogBtnChange.setEnabled(true);
-                dialog.dismiss();
+                UserState.INSTANCE.findByUsername(dialog.getTxtInput().getText().toString(), new VolleyCallback() {
+                    @Override
+                    public void onSuccess(String stringResponse) {
+                        try {
+                            JSONArray jsonArray = new JSONArray(stringResponse);
+                            if (!jsonArray.isNull(0)){
+                                Toast.makeText(getContext(), "Username already in database", Toast.LENGTH_LONG).show();
+                        }
+                            else {
+                                dialogBtnChange.setEnabled(false);
+                                if (dialog.getTxtInput().getText().toString().isEmpty()) {
+                                    Toast.makeText(context, "Input username", Toast.LENGTH_SHORT).show();
+                                } else if (dialog.getTxtInput().getText().toString().contains(".") || dialog.getTxtInput().getText().toString().contains(" ")) {
+                                    Toast.makeText(context, "Username should not contain periods or whitespaces", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    father.changeUsername(dialog.getTxtInput().getText().toString());
+                                    txtInput.setText("");
+                                }
+                                dialogBtnChange.setEnabled(true);
+                                dialog.dismiss();
+                            }
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
             }
         });
     }

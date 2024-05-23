@@ -22,7 +22,6 @@ import be.kuleuven.gt.hikinglog.helpers.VolleyCallback;
 import be.kuleuven.gt.hikinglog.state.MapState;
 
 public class SavePathDialog extends Dialog {
-
     SavePathDialog dialog;
     MapFragment mapFragment;
     private Button dialogBtnSave, dialogBtnDelete;

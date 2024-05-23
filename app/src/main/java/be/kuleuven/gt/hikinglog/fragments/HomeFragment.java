@@ -29,15 +29,12 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         sharedPref = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt("started", 0);
         editor.apply();
-
-        BaseActivity mapsScreen = (BaseActivity) getActivity();
 
         mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.fragMap);
         startBtn = view.findViewById(R.id.btnStart);

@@ -34,7 +34,6 @@ public class ChatsFragment extends Fragment implements ChatHeadClickedListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chats, container, false);
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         usrId = sharedPreferences.getInt("usrId", 1);
