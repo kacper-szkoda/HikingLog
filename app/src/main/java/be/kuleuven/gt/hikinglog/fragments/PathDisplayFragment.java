@@ -2,6 +2,7 @@ package be.kuleuven.gt.hikinglog.fragments;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,16 +77,22 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
                             mapsScreen.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    gMap.addPolyline(PathDrawer.createLine(coords.get(j - 1), coords.get(j)));
+                                    try {
+                                        gMap.addPolyline(PathDrawer.createLine(coords.get(j - 1), coords.get(j)));
+                                    } catch (ArrayIndexOutOfBoundsException e){
+                                        Log.w("EXCEPTION", "Path was empty", e);
+                                    }
                                 }
                             });
                         }
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        Log.w("EXCEPTION", "JSON was empty", e);
                     }
                 }
-                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(coords.get(coords.size() - 1).latitude, coords.get(coords.size() - 1).longitude), 15));
+                if (coords.size() != 0){
+                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(coords.get(coords.size() - 1).latitude, coords.get(coords.size() - 1).longitude), 15));
+                }
             }
         });
     }

@@ -114,7 +114,6 @@ public class BaseActivity extends AppCompatActivity {
                 }
             }
         });
-        Toast.makeText(getBaseContext(), "searched", Toast.LENGTH_SHORT).show();
     }
 
     private void replaceFragment(androidx.fragment.app.Fragment fragment) {

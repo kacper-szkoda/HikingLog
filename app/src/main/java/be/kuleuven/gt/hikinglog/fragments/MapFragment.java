@@ -29,8 +29,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -178,17 +176,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
-    private void PathMethod() {
+    private void pathMethod() {
         getDeviceLocation();
     }
 
     public void onStartBtn() {
         setStarted(true);
+        pathMethod();
         myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                PathMethod();
+                pathMethod();
             }
         }, 5, 10000);
     }
@@ -199,12 +198,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void saveCoords() {
-        MapState.INSTANCE.postMap(coords.get(coords.size() - 1), new VolleyCallback() {
-            @Override
-            public void onSuccess(String stringResponse) {
+        try {
+            MapState.INSTANCE.postMap(coords.get(coords.size() - 1), new VolleyCallback() {
+                @Override
+                public void onSuccess(String stringResponse) {
 
-            }
-        });
+                }
+            });
+        } catch (ArrayIndexOutOfBoundsException e)
+        {
+            Log.w("EXCEPTION", "No coords in array", e);
+        }
     }
 
     public void savePath(String pathname) {
