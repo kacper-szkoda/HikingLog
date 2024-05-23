@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -34,7 +35,6 @@ import be.kuleuven.gt.hikinglog.state.MessageModel;
 import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class BaseActivity extends AppCompatActivity {
-    MapState mapState = MapState.INSTANCE;
     ActivityBaseBinding binding;
 
     @Override
@@ -44,7 +44,7 @@ public class BaseActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        mapState.setUpMapState(getBaseContext());
+        MapState.INSTANCE.setUpMapState(getBaseContext());
 
         replaceFragment(new HomeFragment());
         binding.bottomNavigationView.getMenu().getItem(1).setChecked(true);
@@ -125,9 +125,6 @@ public class BaseActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    public MapState returnMapState() {
-        return mapState;
-    }
 
     public int getUsrId() {
         SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
@@ -201,5 +198,21 @@ public class BaseActivity extends AppCompatActivity {
         transaction.setReorderingAllowed(true);
         transaction.replace(R.id.fragContainer, fragment);
         transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentContainerView fcv = findViewById(R.id.fragContainer);
+        super.onBackPressed();
+        if (fcv.getFragment().getClass().equals(HomeFragment.class)) {
+            binding.bottomNavigationView.getMenu().getItem(1).setChecked(true);
+        }
+        else if (fcv.getFragment().getClass().equals(ChatsFragment.class)){
+            binding.bottomNavigationView.getMenu().getItem(2).setChecked(true);
+        }
+        else if (fcv.getFragment().getClass().equals(ProfileFragment.class)){
+            binding.bottomNavigationView.getMenu().getItem(0).setChecked(true);
+        }
+
     }
 }

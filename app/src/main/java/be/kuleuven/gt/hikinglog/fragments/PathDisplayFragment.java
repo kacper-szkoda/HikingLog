@@ -55,8 +55,7 @@ public class PathDisplayFragment extends Fragment implements OnMapReadyCallback 
 
     public void recoverPath() {
         BaseActivity mapsScreen = (BaseActivity) getActivity();
-        MapState mapState = mapsScreen.returnMapState();
-        mapState.recoverMap(profileId, pathName, new VolleyCallback() {
+        MapState.INSTANCE.recoverMap(profileId, pathName, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
                 JSONArray jsonArray = null;

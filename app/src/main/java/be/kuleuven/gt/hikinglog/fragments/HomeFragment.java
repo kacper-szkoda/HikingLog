@@ -26,7 +26,6 @@ public class HomeFragment extends Fragment {
     Button startBtn;
     Dialog dialogSave;
     SharedPreferences sharedPref;
-    MapState mapState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,7 +39,6 @@ public class HomeFragment extends Fragment {
         editor.apply();
 
         BaseActivity mapsScreen = (BaseActivity) getActivity();
-        mapState = mapsScreen.returnMapState();
 
         mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.fragMap);
         startBtn = view.findViewById(R.id.btnStart);
@@ -52,8 +50,8 @@ public class HomeFragment extends Fragment {
                 if (!getStarted()) {
                     startBtn.setText(R.string.btnStopValue);
                     startBtn.setEnabled(false);
-                    mapState.startPath(
-                            jsonArray -> mapState.getLatestPathId(new VolleyCallback() {
+                    MapState.INSTANCE.startPath(
+                            jsonArray -> MapState.INSTANCE.getLatestPathId(new VolleyCallback() {
                                 @Override
                                 public void onSuccess(String stringResponse) {
                                     try {
