@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void onBtnLogin_Clicked(View Caller) {
+    public void onBtnLoginClicked(View Caller) {
         if (txtUsrname.getText().toString().isEmpty()) {
             Toast.makeText(getBaseContext(), "Input username", Toast.LENGTH_SHORT).show();
             return;
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         btnLogin.setEnabled(true);
     }
 
-    public void onBtnSignin_Clicked(View Caller) {
+    public void onBtnSigninClicked(View Caller) {
         Intent intent = new Intent(this, SigninActivity.class);
         startActivity(intent);
     }

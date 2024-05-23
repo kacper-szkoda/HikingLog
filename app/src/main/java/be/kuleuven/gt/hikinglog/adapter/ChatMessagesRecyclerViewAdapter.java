@@ -23,16 +23,14 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
     ArrayList<MessageModel> messagesDisplayed;
     int usrId;
     LastMessageVisibleListener listener;
-    LinearLayoutManager layoutManager;
 
     public ChatMessagesRecyclerViewAdapter(Context context, ArrayList<MessageModel> messages,
-                                           LastMessageVisibleListener father, LinearLayoutManager layoutManager) {
+                                           LastMessageVisibleListener father) {
         this.context = context;
         this.messagesDisplayed = messages;
         SharedPreferences sharedPreferences = context.getSharedPreferences("user", Context.MODE_PRIVATE);
         usrId = sharedPreferences.getInt("usrId", 1);
         this.listener = father;
-        this.layoutManager = layoutManager;
     }
 
     @NonNull
@@ -63,11 +61,9 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
         MessageModel message = messagesDisplayed.get(position);
         holder.getDate().setText(message.getDate());
         holder.getMessage().setText(message.getText());
-        holder.setPosition(position);
         if (position == messagesDisplayed.size() - 1) {
             listener.scrolledPast(false);
         }
-//        int lastMessage = layoutManager.findLastCompletelyVisibleItemPosition();
     }
 
     @Override
@@ -86,15 +82,12 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView message;
         TextView date;
-        ConstraintLayout outsideConstraint, insideConstraint;
         private int position;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             message = itemView.findViewById(R.id.txtMessage);
             date = itemView.findViewById(R.id.txtDate);
-            outsideConstraint = itemView.findViewById(R.id.constraintOutside);
-            insideConstraint = itemView.findViewById(R.id.constraintInside);
         }
 
         public TextView getMessage() {
@@ -103,14 +96,6 @@ public class ChatMessagesRecyclerViewAdapter extends RecyclerView.Adapter<ChatMe
 
         public TextView getDate() {
             return date;
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
-        }
-
-        public int getPositionList() {
-            return position;
         }
     }
 }

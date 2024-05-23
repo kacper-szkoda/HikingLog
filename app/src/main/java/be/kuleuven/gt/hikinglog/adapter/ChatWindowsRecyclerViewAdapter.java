@@ -22,7 +22,6 @@ import be.kuleuven.gt.hikinglog.state.FriendModel;
 public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWindowsRecyclerViewAdapter.MyViewHolder> {
     Context context;
     ArrayList<FriendModel> friends;
-    int userId;
 
     public ChatWindowsRecyclerViewAdapter(Context context, ArrayList<FriendModel> friends) {
         this.context = context;
@@ -33,7 +32,7 @@ public class ChatWindowsRecyclerViewAdapter extends RecyclerView.Adapter<ChatWin
     @Override
     public ChatWindowsRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recyler_view_row_chat_head, parent, false);
+        View view = inflater.inflate(R.layout.recyler_view_row_chat_head, parent,false);
         return new ChatWindowsRecyclerViewAdapter.MyViewHolder(view);
     }
 

@@ -23,7 +23,7 @@ import be.kuleuven.gt.hikinglog.state.UserState;
 
 public class SigninActivity extends AppCompatActivity {
     TextView txtUsrname, txtPassword, txtPasswordRepeat;
-    Button btnConrfirm;
+    Button btnConfirm;
     UserState userState = UserState.INSTANCE;
 
     @Override
@@ -39,24 +39,24 @@ public class SigninActivity extends AppCompatActivity {
         txtUsrname = findViewById(R.id.txtUsernameInputField);
         txtPassword = findViewById(R.id.txtPasswordInputField);
         txtPasswordRepeat = findViewById(R.id.txtPasswordConfirmationField);
-        btnConrfirm = findViewById(R.id.btnConfirm);
+        btnConfirm = findViewById(R.id.btnConfirm);
     }
 
-    public void onBtnConfirm_Clicked(View Caller) {
+    public void onBtnConfirmClicked(View Caller) {
         if (txtUsrname.getText().toString().isEmpty()) {
             Toast.makeText(getBaseContext(), "Username should not be empty", Toast.LENGTH_SHORT).show();
             return;
-        } else if (txtUsrname.getText().toString().contains(".")) {
-            Toast.makeText(getBaseContext(), "Username should not contain periods", Toast.LENGTH_SHORT).show();
+        } else if (txtUsrname.getText().toString().contains(".") || txtUsrname.getText().toString().contains(" ") ) {
+            Toast.makeText(getBaseContext(), "Username should not contain periods or whitespaces", Toast.LENGTH_SHORT).show();
             return;
-        } else if (txtPassword.getText().toString().isEmpty() || txtPassword.getText().toString().isEmpty()) {
+        } else if (txtPassword.getText().toString().isEmpty() || txtPasswordRepeat.getText().toString().isEmpty()) {
             Toast.makeText(getBaseContext(), "Both passwords need to be filled in", Toast.LENGTH_SHORT).show();
             return;
         } else if (!(txtPassword.getText().toString().equals(txtPasswordRepeat.getText().toString()))) {
             Toast.makeText(getBaseContext(), "Passwords should match", Toast.LENGTH_SHORT).show();
             return;
         }
-        btnConrfirm.setEnabled(false);
+        btnConfirm.setEnabled(false);
         userState.findByUsername(txtUsrname.getText().toString(), new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
@@ -68,13 +68,13 @@ public class SigninActivity extends AppCompatActivity {
                 }
                 if (!jsonArray.isNull(0)) {
                     Toast.makeText(getBaseContext(), "Username already in database", Toast.LENGTH_SHORT).show();
-                    btnConrfirm.setEnabled(true);
+                    btnConfirm.setEnabled(true);
                 } else {
                     Toast.makeText(getBaseContext(), "Account successfully created!", Toast.LENGTH_SHORT).show();
                     userState.addNewUser(txtUsrname.getText().toString(), txtPassword.getText().toString(), new VolleyCallback() {
                         @Override
                         public void onSuccess(String stringResponse) {
-                            btnConrfirm.setEnabled(true);
+                            btnConfirm.setEnabled(true);
                             SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("username", txtUsrname.getText().toString());
@@ -98,6 +98,6 @@ public class SigninActivity extends AppCompatActivity {
                 }
             }
         });
-        btnConrfirm.setEnabled(true);
+        btnConfirm.setEnabled(true);
     }
 }

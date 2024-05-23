@@ -72,7 +72,7 @@ public class ChatMessagesFragment extends Fragment implements LastMessageVisible
                 public void run() {
                     RecyclerView recyclerView = view.findViewById(R.id.recyclerMessages);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                    ChatMessagesRecyclerViewAdapter adapter = new ChatMessagesRecyclerViewAdapter(getContext(), messages, father, layoutManager);
+                    ChatMessagesRecyclerViewAdapter adapter = new ChatMessagesRecyclerViewAdapter(getContext(), messages, father);
                     recyclerView.setAdapter(adapter);
                     layoutManager.setStackFromEnd(true);
                     recyclerView.setLayoutManager(layoutManager);

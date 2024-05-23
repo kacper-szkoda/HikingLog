@@ -32,7 +32,7 @@ public class ChangeUsernameDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.setContentView(R.layout.confirm_path_dialog);
+        dialog.setContentView(R.layout.dialog_confirm_path);
         dialog.setCancelable(false);
         dialogBtnChange = dialog.findViewById(R.id.btnDialogSave);
         dialogBtnCancel = dialog.findViewById(R.id.btnDialogDelete);

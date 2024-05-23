@@ -40,7 +40,7 @@ public class PathDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dialog.setContentView(R.layout.path_profile_dialog);
+        dialog.setContentView(R.layout.dialog_path_profile);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         fcv = dialog.findViewById(R.id.fragmentContainerView);
         pathDisplayFragment = fcv.getFragment();

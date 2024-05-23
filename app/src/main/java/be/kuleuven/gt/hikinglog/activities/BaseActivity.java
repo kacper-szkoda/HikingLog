@@ -89,7 +89,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void search(String query) {
-        //TODO replace fragment in on success for finding id by username, put that into bundle to be read
         UserState.INSTANCE.findByUsername(query, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
@@ -147,10 +146,10 @@ public class BaseActivity extends AppCompatActivity {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String text = jsonObject.getString("message");
-                        String date = jsonObject.getString("time");
+                        String time = jsonObject.getString("time");
                         int idsender = jsonObject.getInt("idusersender");
                         int idreceiver = jsonObject.getInt("iduserreceiver");
-                        MessageModel message = new MessageModel(text, date, idsender, idreceiver);
+                        MessageModel message = new MessageModel(text, time, idsender, idreceiver);
                         messages.add(message);
                     }
                     Bundle args = new Bundle();
@@ -160,6 +159,7 @@ public class BaseActivity extends AppCompatActivity {
                     ChatMessagesFragment fragment = new ChatMessagesFragment();
                     fragment.setArguments(args);
                     if (fromAccept) {
+                        //Not put on backstack so that it can not be accidentally reachedkc
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         FragmentTransaction transaction = fragmentManager.beginTransaction();
                         transaction.setReorderingAllowed(true);
@@ -188,6 +188,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void requestDeclined() {
+        //Not put on backstack
         ChatsFragment fragment = new ChatsFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();

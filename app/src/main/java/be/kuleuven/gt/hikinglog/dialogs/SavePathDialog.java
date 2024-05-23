@@ -37,7 +37,7 @@ public class SavePathDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.confirm_path_dialog);
+        this.setContentView(R.layout.dialog_confirm_path);
         this.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         this.setCancelable(false);
 
