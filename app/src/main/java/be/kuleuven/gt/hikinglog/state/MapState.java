@@ -61,7 +61,7 @@ public enum MapState {
         control.executeGetRequest(URL_Fin, callback);
     }
 
-    public void savePath(String pathname, VolleyCallback callback) {
+    public void renamePathEntries(String pathname, VolleyCallback callback) {
         String URL_Fin = SQLControl.urlBuilder("savePath", pathname, String.valueOf(latestPathId));
 
         control.executeGetRequest(URL_Fin, callback);

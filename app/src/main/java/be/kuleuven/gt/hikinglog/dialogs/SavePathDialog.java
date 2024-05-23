@@ -93,7 +93,6 @@ public class SavePathDialog extends Dialog {
                         }
                     }
                     mapFragment.onStopBtn();
-                    mapFragment.saveCoords();
                     mapFragment.savePath(textView.getText().toString());
                     dialog.dismiss();
                 } catch (JSONException e) {

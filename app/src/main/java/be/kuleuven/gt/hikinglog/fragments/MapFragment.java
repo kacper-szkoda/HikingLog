@@ -112,37 +112,35 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void getDeviceLocation() {
         try {
             if (locationPermissionGranted) {
-                if (locationPermissionGranted) {
-                    Task<Location> locationResult = fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null);
-                    locationResult.addOnCompleteListener(this.getActivity(), new OnCompleteListener<Location>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Location> task) {
-                            if (task.isSuccessful()) {
-                                // Set the map's camera position to the current location of the device.
-                                lastKnownLocation = task.getResult();
-                                if (lastKnownLocation != null) {
-                                    gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                            new LatLng(lastKnownLocation.getLatitude(),
-                                                    lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                }
-                            } else {
-                                Log.d(TAG, "Current location is null. Using defaults.");
-                                Log.e(TAG, "Exception: %s", task.getException());
-                                gMap.moveCamera(CameraUpdateFactory
-                                        .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                                gMap.getUiSettings().setMyLocationButtonEnabled(false);
+                Task<Location> locationResult = fusedLocationProviderClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null);
+                locationResult.addOnCompleteListener(this.getActivity(), new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            lastKnownLocation = task.getResult();
+                            if (lastKnownLocation != null) {
+                                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(lastKnownLocation.getLatitude(),
+                                                lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                             }
-                            if (getStarted()) {
-                                coords.add(new LatLng(lastKnownLocation.getLatitude(),
-                                        lastKnownLocation.getLongitude()));
-                                saveCoords();
-                                if (coords.size() > 1) {
-                                    parent.runOnUiThread(RecordPath);
-                                }
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            gMap.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+                            gMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                        if (getStarted()) {
+                            coords.add(new LatLng(lastKnownLocation.getLatitude(),
+                                    lastKnownLocation.getLongitude()));
+                            saveCoords();
+                            if (coords.size() > 1) {
+                                parent.runOnUiThread(RecordPath);
                             }
                         }
-                    });
-                }
+                    }
+                });
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage(), e);
@@ -175,20 +173,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void pathMethod() {
-        getDeviceLocation();
-    }
 
     public void onStartBtn() {
         setStarted(true);
-        pathMethod();
+        getDeviceLocation();
         myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                pathMethod();
+                getDeviceLocation();
             }
-        }, 5, 10000);
+        }, 10000, 10000);
     }
 
     public void onStopBtn() {
@@ -197,26 +192,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void saveCoords() {
-        try {
             MapState.INSTANCE.postMap(coords.get(coords.size() - 1), new VolleyCallback() {
                 @Override
                 public void onSuccess(String stringResponse) {
 
                 }
             });
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Log.w("EXCEPTION", "No coords in array", e);
-        }
     }
 
     public void savePath(String pathname) {
-        MapState.INSTANCE.savePath(pathname, new VolleyCallback() {
+        MapState.INSTANCE.renamePath(pathname, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
 
             }
         });
-        MapState.INSTANCE.renamePath(pathname, new VolleyCallback() {
+        MapState.INSTANCE.renamePathEntries(pathname, new VolleyCallback() {
             @Override
             public void onSuccess(String stringResponse) {
 
